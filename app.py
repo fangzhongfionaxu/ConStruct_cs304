@@ -18,8 +18,8 @@ app.secret_key = secrets.token_hex()
 # This gets us better error messages for certain common request errors
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
-@app.route('/')
-def index():
+@app.route('/') #home
+def home():
     return render_template('main.html',
                            page_title='Main Page')
 

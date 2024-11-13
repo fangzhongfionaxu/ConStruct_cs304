@@ -23,12 +23,12 @@ CREATE TABLE events  (
 
     eid  int, 
     title varchar(60), 
-    desc varchar(200),
+    desc varchar(1000),
     host int, --is uid--[ref: > user.uid]
     industry enum('Academic','Energy',  'Materials', 'Industrials',  'Consumer Discretionary/Staples', 'Health Care', 
      'Financials', 'Information Technology', 'Real Estate',  'Communication Services', 'Utilities','Other') ,
     location varchar(100),
-    start_date datetime,
+    start_date datetime, --check if format fits
     end_date datetime,
 
     PRIMARY Key (eid),
@@ -40,8 +40,8 @@ CREATE TABLE events  (
 ENGINE = InnoDB;
 
 CREATE TABLE attendees(
-    attendee int,
     eid int,
+    aid int, -- attendee
     checked_in bool,
     foreign key (eid) references event(eid)
         on update restrict
@@ -54,7 +54,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE companys(
     cid int,
-    name varchar(50),
+    name varchar(100),
     
     PRIMARY KEY (cid),
 

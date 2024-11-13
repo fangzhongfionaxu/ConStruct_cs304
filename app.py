@@ -47,6 +47,7 @@ def greet():
 
 @app.route('/formecho/', methods=['GET','POST'])
 def formecho():
+    print("hi")
     if request.method == 'GET':
         return render_template('form_data.html',
                                page_title='Display of Form Data',

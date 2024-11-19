@@ -23,19 +23,19 @@ CREATE TABLE events  (
 
     eid  int, 
     title varchar(60), 
-    desc varchar(1000),
-    host int, --is uid--[ref: > user.uid]
+    descript varchar(1000),
+    host int, -- is uid--[ref: > user.uid]
     industry enum('Academic','Energy',  'Materials', 'Industrials',  'Consumer Discretionary/Staples', 'Health Care', 
      'Financials', 'Information Technology', 'Real Estate',  'Communication Services', 'Utilities','Other') ,
     location varchar(100),
-    start_date datetime, --check if format fits
+    start_date datetime, -- check if format fits
     end_date datetime,
 
     PRIMARY Key (eid),
     index (title),
-    foreign key (host) references user(uid)
+    foreign key (host) references users(uid)
         on update restrict
-        on delete restrict --cannot delete this user if the user is hosting an event
+        on delete restrict -- cannot delete this user if the user is hosting an event
 )
 ENGINE = InnoDB;
 
@@ -46,7 +46,7 @@ CREATE TABLE attendees(
     foreign key (eid) references event(eid)
         on update restrict
         on delete restrict
-    foreign key (attendee) references user(uid)
+    foreign key (aid) references users(uid)
         on update cascade
         on delete cascade
 )
@@ -58,10 +58,10 @@ CREATE TABLE companys(
     
     PRIMARY KEY (cid),
 
-    foreign key (cid) references user(cid)
+    foreign key (cid) references users(cid)
+
         on update cascade
         on delete cascade
 
 )
 ENGINE = InnoDB;
-

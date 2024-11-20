@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 import cs304dbi as dbi
 # import cs304dbi_sqlite3 as dbi
-
+import construct as c
 import secrets
 
 app.secret_key = 'your secret here'
@@ -18,6 +18,7 @@ app.secret_key = secrets.token_hex()
 # This gets us better error messages for certain common request errors
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
+
 @app.route('/') #home
 def home():
     return render_template('main.html',
@@ -25,6 +26,19 @@ def home():
 
 # You will probably not need the routes below, but they are here
 # just in case. Please delete them if you are not using them
+
+@app.route('/browse/') #home
+def browse():
+    
+    return render_template('browse_lookup.html',
+                           page_title='Browsing Page')
+
+@app.route('/login/') #home
+def login():
+    
+    return render_template('browse_lookup.html',
+                           page_title='Browsing Page')
+
 
 @app.route('/greet/', methods=["GET", "POST"])
 def greet():
@@ -83,7 +97,7 @@ if __name__ == '__main__':
     else:
         port = os.getuid()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'ac135_db' 
+    db_to_use = 'fx100_db' 
     print(f'will connect to {db_to_use}')
     dbi.conf(db_to_use)
     app.debug = True

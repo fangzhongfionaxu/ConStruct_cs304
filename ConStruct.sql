@@ -1,10 +1,19 @@
 use construct_db;
 -- Fangzhong Xu and Ashley Cong
-drop table if exists companies;
+
 drop table if exists attendees;
 drop table if exists events;
 drop table if exists users;
+drop table if exists companies;
 
+CREATE TABLE companies(
+    cid int,
+    name varchar(100),
+    
+    PRIMARY KEY (cid)
+
+)
+ENGINE = InnoDB;
 
 CREATE TABLE users  ( 
 
@@ -15,7 +24,10 @@ CREATE TABLE users  (
     password varchar(30),
     cid int,
 
-    PRIMARY Key (uid)
+    PRIMARY Key (uid),
+    foreign key (cid) references companies(cid)
+        on update cascade
+        on delete cascade
 )
 ENGINE = InnoDB;
 
@@ -45,23 +57,11 @@ CREATE TABLE attendees(
     checked_in boolean,
     foreign key (eid) references events(eid)
         on update restrict
-        on delete restrict
+        on delete restrict,
     foreign key (aid) references users(uid)
         on update cascade
         on delete cascade
 )
 ENGINE = InnoDB;
 
-CREATE TABLE companies(
-    cid int,
-    name varchar(100),
-    
-    PRIMARY KEY (cid),
-
-    foreign key (cid) references users(cid)
-        on update restrict
-        on delete restrict
-
-)
-ENGINE = InnoDB;
 

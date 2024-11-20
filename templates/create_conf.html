@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h2>Create A New Conference</h2>
+
+<form method=post action="">
+    <fieldset>
+        <legend>Movie Data</legend>
+        <table>
+        <tr><td><label for="movie-tt" accesskey="i">(i) Movie ID/TT:</label></td>
+            <td><input id="movie-tt" type="text" name="movie-tt"></td></tr>
+        <tr><td><label for="movie-title" accesskey="t">(t) Movie Title:</label></td>
+            <td><input id="movie-title" type="text" name="movie-title"></td></tr>
+        <tr><td><label for="movie-release" accesskey="r">(r) Movie Release Year:</label></td>
+            <td><input id="movie-release" type="text" name="movie-release"></td></tr>
+        </table>
+        </fieldset>
+    
+        <p> <input type='submit' value='Insert Movie'> </p>
+
+</form>
+
+{% endblock %}

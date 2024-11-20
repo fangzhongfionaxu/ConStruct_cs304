@@ -61,10 +61,17 @@ def formecho():
     else:
         raise Exception('this cannot happen')
 
-@app.route('/testform/')
-def testform():
-    # these forms go to the formecho route
-    return render_template('testform.html')
+@app.route('/create_conf/')
+def create_conf():
+    if request.method == 'POST':
+        title = request.form.get('conf-title')
+        description = request.form.get('conf-description')
+        industry = request.form.get('')
+        location = request.form.get('conf-location')
+        start_date = request.form.get('conf-start')
+        end_date = request.form.get('conf-end')
+        # add file upload option
+    return render_template('create_conf.html')
 
 
 if __name__ == '__main__':

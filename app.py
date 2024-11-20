@@ -17,6 +17,7 @@ app.secret_key = secrets.token_hex()
 
 # This gets us better error messages for certain common request errors
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
+import construct.py as c
 
 @app.route('/') #home
 def home():
@@ -25,6 +26,13 @@ def home():
 
 # You will probably not need the routes below, but they are here
 # just in case. Please delete them if you are not using them
+
+@app.route('/browse/') #home
+def browse():
+    
+    return render_template('browse_lookup.html',
+                           page_title='Browsing Page')
+
 
 @app.route('/greet/', methods=["GET", "POST"])
 def greet():

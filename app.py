@@ -36,8 +36,16 @@ def browse():
 @app.route('/login/') #home
 def login():
     
-    return render_template('browse_lookup.html',
-                           page_title='Browsing Page')
+    return render_template('login.html',
+                           page_title='Login Page')
+
+
+@app.route('/create_conf/') #home
+def create_conf():
+    
+    return render_template('create_conf.html',
+                           page_title='Create Conf Page')
+
 
 
 @app.route('/greet/', methods=["GET", "POST"])

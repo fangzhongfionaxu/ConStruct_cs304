@@ -17,7 +17,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE users  ( 
 
-    uid int, 
+    uid int auto_increment, 
     name varchar(40), 
     phnum int,
     email varchar(40),
@@ -33,7 +33,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE events  ( 
 
-    eid  int, 
+    eid  int auto_increment, 
     title varchar(60), 
     descript varchar(1000),
     host int, -- is uid--[ref: > user.uid]

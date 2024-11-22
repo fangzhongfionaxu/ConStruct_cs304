@@ -1,1 +1,45 @@
 {% extends "base.html" %}
+
+{% block main_content %}
+
+<h2>Create A New Conference!</h2>
+
+<form method=post action="">
+    <fieldset>
+        <legend>Conference Information</legend>
+        <table>
+        <tr><td><label for="conf-title" accesskey="i">(i) Conference Title:</label></td>
+            <td><input id="conf-title" type="text" name="conf-title"></td></tr>
+        <tr><td><label for="conf-description" accesskey="t">(t) Conference Description:</label></td>
+            <td><input id="conf-description" type="text" name="conf-description"></td></tr>
+        <tr><td><label for="conf-location" accesskey="r">(r) Conference Location:</label></td>
+            <td><input id="conf-location" type="text" name="conf-location"></td></tr>
+        <tr><td><label for="conf-start" accesskey="y">(y) Conference Start Date:</label></td>
+            <td><input id="conf-start" type="text" name="conf-start"></td></tr>
+        <tr><td><label for="conf-end" accesskey="u">(u) Conference End Date:</label></td>
+            <td><input id="conf-end" type="text" name="conf-end"></td></tr>
+            <label for="conf-industry">Industry:</label>
+            <select id="conf-industry" name="conf-industry">
+            <option value="none">Choose One</option>
+                <option value="Academic">Academic</option>
+                <option value="Energy">Energy</option>
+                <option value="Materials">Materials</option>
+                <option value="Industrials">Industrials</option>
+                <option value="Consumer Discretionary/Staples'">Consumer Discretionary/Staples'</option>
+                <option value="Health Care">Health Care</option>
+                <option value="Financials">Financials</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Communication Services">Communication Services</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Other">Other</option>
+                  </select>
+        <tr><td><label for="conf-host" accesskey="u">(u) Conference Host (User ID):</label></td>
+            <td><input id="conf-host" type="text" name="conf-host"></td></tr>
+        </table>
+        </fieldset>
+        <p> <input type='submit' value='Submit'> </p>
+
+</form>
+
+{% endblock %}

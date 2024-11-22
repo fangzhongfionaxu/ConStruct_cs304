@@ -40,6 +40,13 @@ def login():
                            page_title='Login Page')
 
 
+@app.route('/create_account/') #home
+def create_account():
+    
+    return render_template('create_account.html',
+                           page_title='Create Account Page')
+
+
 @app.route('/create_conf/') #home
 def create_conf():
     
@@ -67,24 +74,10 @@ def greet():
 
 # This route displays all the data from the submitted form onto the rendered page
 
-@app.route('/formecho/', methods=['GET','POST'])
-def formecho():
-    print("hi")
-    if request.method == 'GET':
-        return render_template('form_data.html',
-                               page_title='Display of Form Data',
-                               method=request.method,
-                               form_data=request.args)
-    elif request.method == 'POST':
-        return render_template('form_data.html',
-                               page_title='Display of Form Data',
-                               method=request.method,
-                               form_data=request.form)
-    else:
-        raise Exception('this cannot happen')
 
-@app.route('/testform/')
-def testform():
+
+@app.route('/search/')
+def search_bar():
     # these forms go to the formecho route
     return render_template('testform.html')
 
@@ -98,7 +91,7 @@ if __name__ == '__main__':
     else:
         port = os.getuid()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'fx100_db' 
+    db_to_use = 'construct_db' 
     print(f'will connect to {db_to_use}')
     dbi.conf(db_to_use)
     app.debug = True

@@ -11,11 +11,11 @@
 </p>    
 <!-- two forms, both sending data to the same back-end route -->
 
-<h2>POST form</h2>
+<h2>keyword search form</h2>
 
 <!-- a form that uses POST -->
 
-<form method="post" action="{{url_for('formecho')}}">
+<form method="post" action="{{url_for('search_bar')}}">
 <p><label>Name:
     <input required type="text" name="user" size="50" placeholder="Arthur, King of the Britons"></label></p>
 
@@ -38,7 +38,7 @@
 
 <h2>GET form</h2>
 
-<form method="get" action="{{url_for('formecho')}}">
+<form method="get" action="{{url_for('search_bar')}}">
 <p><label>Name:
     <input required type="text" name="user" size="50" placeholder="Arthur, King of the Britons"></label></p>
 

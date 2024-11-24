@@ -1,6 +1,6 @@
 import cs304dbi as dbi
 
-def select_conf(conn):
+def select_conf(conn): #browse
     curs = dbi.dict_cursor(conn)
     sql = 'select * from movie where tt = %s'
     curs.execute(sql,[tt])
@@ -12,3 +12,7 @@ def select_conf(conn):
         curs.execute(sql,[tt, title, year, director, 10027])
         conn.commit()
     return tt
+
+def insert_user(conn): #create_account page
+
+def insert_conf(conn): #create_conf page

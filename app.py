@@ -28,17 +28,6 @@ def home():
 # You will probably not need the routes below, but they are here
 # just in case. Please delete them if you are not using them
 
-@app.route('/browse/') #home
-def browse():
-    
-    return render_template('browse_lookup.html',
-                           page_title='Browsing Page')
-
-@app.route('/login/') #home
-def login():
-    
-    return render_template('login.html',
-                           page_title='Login Page')
 
 @app.route('/greet/', methods=["GET", "POST"])
 def greet():
@@ -75,6 +64,38 @@ def formecho():
     else:
         raise Exception('this cannot happen')
 
+@app.route('/browse/') #home
+def browse():
+    
+    return render_template('browse_lookup.html',
+                           page_title='Browsing Page')
+
+@app.route('/login/') #home
+def login():
+    
+    return render_template('login.html',
+                           page_title='Login Page')
+
+
+@app.route('/create_account/') #home
+def create_account():
+    if request.method == 'GET':
+        return render_template('create_account.html',
+                               
+                           page_title='Create Account Page')
+
+    elif request.method == 'POST':
+        name = request.form.get('name')
+        phnum = request.form.get('phnum')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        company = request.form.get('company')
+
+
+        return redirect(url_for('create_account.html',
+                           page_title='Create Account Page')) #redirect to browsing page
+
+
 @app.route('/create_conf/', methods=['GET', 'POST'])
 def create_conf():
     if request.method == 'POST':
@@ -97,7 +118,7 @@ def create_conf():
             "insert into events(eid,title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s,%s)", (new_eid,title,description,industry,location,start_date,end_date,host))
         conn.commit()
         flash("Conference created successfully!")
-        return redirect(url_for('create_conf'))
+        return redirect(url_for('create_conf')) # go to conf detail page
     return render_template('create_conf.html')
 
 @app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
@@ -122,7 +143,7 @@ if __name__ == '__main__':
     else:
         port = os.getuid()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'fx100_db' 
+    db_to_use = 'construct_db' 
     print(f'will connect to {db_to_use}')
     dbi.conf(db_to_use)
     app.debug = True

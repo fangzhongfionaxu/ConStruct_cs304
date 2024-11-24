@@ -17,7 +17,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE users  ( 
 
-    uid int, 
+    uid int auto_increment, 
     name varchar(40), 
     phnum int,
     email varchar(40),

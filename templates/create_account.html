@@ -2,8 +2,37 @@
 
 {% block main_content %}
 
-<h1>Greetings {{name}}</h1>
+<h1> Create a New Account {{name}}</h1>
 
+<p>Please fill out the following information to create a ConStruct account:</p>
+
+<!--uid int, 
+name varchar(40), 
+phnum int,
+email varchar(40),
+password varchar(30),
+cid int -->
+
+<form method=post action="/create_account/">
+  <fieldset>
+  <legend>Account Information</legend>
+  <table>
+    <!--uid will be added in the database but not part of the input-->
+  <tr><td><label for="name"> firstname and lastname:</label></td>
+      <td><input id="name" type="text" name="name"></td></tr>
+  <tr><td><label for="phnum"> phone number:</label></td>
+      <td><input id="phnum" type="text" name="phnum"></td></tr>
+  <tr><td><label for="email" > email:</label></td>
+      <td><input id="email" type="email" name="email"></td></tr>
+  <tr><td><label for="password" > password:</label></td>
+      <td><input id="password" type="text" name="password"></td></tr>
+  <tr><td><label for="company" > company:</label></td>
+      <td><input id="company" type="text" name="company"></td></tr>
+  </table>
+  </fieldset>
+
+  <p> <input type='submit' value='Insert Movie'> </p>
+</form>
 <form method="post" action="">
     <p>Please tell us your <label for="username">
             name: <input type="text" name="username">

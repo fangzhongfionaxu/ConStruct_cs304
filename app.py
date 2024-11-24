@@ -100,6 +100,18 @@ def create_conf():
         return redirect(url_for('create_conf'))
     return render_template('create_conf.html')
 
+@app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
+def conf_detail(eid):
+    conn = dbi.connect()
+    curs = dbi.dict_cursor(conn)
+    curs.execute("select eid,title,descript,industry,location,start_date,end_date,host from events where eid = %s", (eid))
+    conference = curs.fetchone()
+    if not conference:
+        flash("Conference with eid=%s not found. Redirecting to create conference page." %eid)
+        return redirect(url_for('create_conf'))
+    return render_template('conf_detail.html',**conference)
+    
+
 
 if __name__ == '__main__':
     import sys, os

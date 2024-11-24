@@ -13,6 +13,14 @@ def select_conf(conn): #browse
         conn.commit()
     return tt
 
-def insert_user(conn): #create_account page
+def insert_conf(conn, title, descript, industry, location, start_date, end_date, host): #create_conf page
+    curs = dbi.dict_cursor(conn)
+    sql = 'insert into events(eid,title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s,%s)'
+    curs.execute("select max(eid) from events")
+    max_eid = curs.fetchone()[0]
+    new_eid = (max_eid or 0) + 1
+    curs.execute(sql, [new_eid,title,descript,industry,location,start_date,end_date,host])
+    conn.commit()
+    return new_eid
 
-def insert_conf(conn): #create_conf page
+def insert_user(conn): #create_account page

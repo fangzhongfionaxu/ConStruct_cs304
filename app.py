@@ -100,25 +100,19 @@ def create_account():
 def create_conf():
     if request.method == 'POST':
         title = request.form.get('conf-title')
-        description = request.form.get('conf-description')
+        descript = request.form.get('conf-description')
         industry = request.form.get('conf-industry')
         location = request.form.get('conf-location')
         start_date = request.form.get('conf-start')
         end_date = request.form.get('conf-end')
         host = request.form.get('conf-host')
-        if not title or not description or industry  == 'none' or not location or not start_date or not end_date or not host:
+        if not title or not descript or industry  == 'none' or not location or not start_date or not end_date or not host:
             flash("All fields are required to create a new conference")
             return render_template('create_conf.html')
         conn = dbi.connect()
-        curs = dbi.dict_cursor(conn)
-        curs.execute("select max(eid) from events")
-        max_eid = curs.fetchone()[0]
-        new_eid = (max_eid or 0) + 1
-        curs.execute(
-            "insert into events(eid,title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s,%s)", (new_eid,title,description,industry,location,start_date,end_date,host))
-        conn.commit()
+        new_eid = c.insert_conf(conn, title, descript,industry,location,start_date,end_date,host)
         flash("Conference created successfully!")
-        return redirect(url_for('create_conf')) # go to conf detail page
+        return redirect(url_for('create_conf', eid=new_eid)) # go to conf detail page
     return render_template('create_conf.html')
 
 @app.route('/conf_detail/<eid>', methods=['GET', 'POST'])

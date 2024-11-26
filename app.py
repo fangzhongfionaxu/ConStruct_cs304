@@ -112,15 +112,13 @@ def create_conf():
         conn = dbi.connect()
         new_eid = c.insert_conf(conn, title, descript,industry,location,start_date,end_date,host)
         flash("Conference created successfully!")
-        return redirect(url_for('create_conf', eid=new_eid)) # go to conf detail page
+        return redirect(url_for('conf_detail', eid=new_eid)) # go to conf detail page
     return render_template('create_conf.html')
 
 @app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
 def conf_detail(eid):
     conn = dbi.connect()
-    curs = dbi.dict_cursor(conn)
-    curs.execute("select eid,title,descript,industry,location,start_date,end_date,host from events where eid = %s", (eid))
-    conference = curs.fetchone()
+    conference = c.get_eid(conn,eid)
     if not conference:
         flash("Conference with eid=%s not found. Redirecting to create conference page." %eid)
         return redirect(url_for('create_conf'))

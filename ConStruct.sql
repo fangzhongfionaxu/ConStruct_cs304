@@ -7,7 +7,7 @@ drop table if exists users;
 drop table if exists companies;
 
 CREATE TABLE companies(
-    cid int,
+    cid int auto_increment,
     name varchar(100),
     
     PRIMARY KEY (cid)
@@ -17,7 +17,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE users  ( 
 
-    uid int auto_increment, 
+    uid int not null auto_increment, 
     name varchar(40), 
     phnum int,
     email varchar(40),

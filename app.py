@@ -48,21 +48,7 @@ def greet():
 
 # This route displays all the data from the submitted form onto the rendered page
 
-@app.route('/formecho/', methods=['GET','POST'])
-def formecho():
-    print("hi")
-    if request.method == 'GET':
-        return render_template('form_data.html',
-                               page_title='Display of Form Data',
-                               method=request.method,
-                               form_data=request.args)
-    elif request.method == 'POST':
-        return render_template('form_data.html',
-                               page_title='Display of Form Data',
-                               method=request.method,
-                               form_data=request.form)
-    else:
-        raise Exception('this cannot happen')
+
 
 @app.route('/browse/') #home
 def browse():
@@ -77,11 +63,12 @@ def login():
                            page_title='Login Page')
 
 
-@app.route('/create_account/') #home
+@app.route('/create_account/', methods=['GET','POST']) #home
 def create_account():
+    conn = dbi.connect()
     if request.method == 'GET':
-        return render_template('create_account.html',
-                               
+        return render_template('create_account.html',  
+                                  
                            page_title='Create Account Page')
 
     elif request.method == 'POST':
@@ -89,37 +76,44 @@ def create_account():
         phnum = request.form.get('phnum')
         email = request.form.get('email')
         password = request.form.get('password')
-        company = request.form.get('company')
+        cname = request.form.get('company')
+        uid = c.insert_user(conn, name, phnum, email, password, cname) #when we have the login page, will redirect to loggedin browsing page
 
-
-        return redirect(url_for('create_account.html',
-                           page_title='Create Account Page')) #redirect to browsing page
+        return redirect(url_for('home')) #redirect to user account page
+""" def user_detail(uid):
+ """    
 
 
 @app.route('/create_conf/', methods=['GET', 'POST'])
 def create_conf():
     if request.method == 'POST':
         title = request.form.get('conf-title')
-        description = request.form.get('conf-description')
+        descript = request.form.get('conf-description')
         industry = request.form.get('conf-industry')
         location = request.form.get('conf-location')
         start_date = request.form.get('conf-start')
         end_date = request.form.get('conf-end')
         host = request.form.get('conf-host')
-        if not title or not description or industry  == 'none' or not location or not start_date or not end_date or not host:
+        if not title or not descript or industry  == 'none' or not location or not start_date or not end_date or not host:
             flash("All fields are required to create a new conference")
             return render_template('create_conf.html')
         conn = dbi.connect()
-        curs = dbi.dict_cursor(conn)
-        curs.execute("select max(eid) from events")
-        max_eid = curs.fetchone()[0]
-        new_eid = (max_eid or 0) + 1
-        curs.execute(
-            "insert into events(eid,title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s,%s)", (new_eid,title,description,industry,location,start_date,end_date,host))
-        conn.commit()
+        new_eid = c.insert_conf(conn, title, descript,industry,location,start_date,end_date,host)
         flash("Conference created successfully!")
-        return redirect(url_for('create_conf')) # go to conf detail page
+        return redirect(url_for('create_conf', eid=new_eid)) # go to conf detail page
     return render_template('create_conf.html')
+
+@app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
+def conf_detail(eid):
+    conn = dbi.connect()
+    curs = dbi.dict_cursor(conn)
+    curs.execute("select eid,title,descript,industry,location,start_date,end_date,host from events where eid = %s", (eid))
+    conference = curs.fetchone()
+    if not conference:
+        flash("Conference with eid=%s not found. Redirecting to create conference page." %eid)
+        return redirect(url_for('create_conf'))
+    return render_template('conf_detail.html',**conference)
+    
 
 
 if __name__ == '__main__':

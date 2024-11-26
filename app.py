@@ -48,21 +48,7 @@ def greet():
 
 # This route displays all the data from the submitted form onto the rendered page
 
-@app.route('/formecho/', methods=['GET','POST'])
-def formecho():
-    print("hi")
-    if request.method == 'GET':
-        return render_template('form_data.html',
-                               page_title='Display of Form Data',
-                               method=request.method,
-                               form_data=request.args)
-    elif request.method == 'POST':
-        return render_template('form_data.html',
-                               page_title='Display of Form Data',
-                               method=request.method,
-                               form_data=request.form)
-    else:
-        raise Exception('this cannot happen')
+
 
 @app.route('/browse/') #home
 def browse():
@@ -77,11 +63,12 @@ def login():
                            page_title='Login Page')
 
 
-@app.route('/create_account/') #home
+@app.route('/create_account/', methods=['GET','POST']) #home
 def create_account():
+    conn = dbi.connect()
     if request.method == 'GET':
-        return render_template('create_account.html',
-                               
+        return render_template('create_account.html',  
+                                  
                            page_title='Create Account Page')
 
     elif request.method == 'POST':
@@ -89,11 +76,12 @@ def create_account():
         phnum = request.form.get('phnum')
         email = request.form.get('email')
         password = request.form.get('password')
-        company = request.form.get('company')
+        cname = request.form.get('company')
+        uid = c.insert_user(conn, name, phnum, email, password, cname) #when we have the login page, will redirect to loggedin browsing page
 
-
-        return redirect(url_for('create_account.html',
-                           page_title='Create Account Page')) #redirect to browsing page
+        return redirect(url_for('home')) #redirect to user account page
+""" def user_detail(uid):
+ """    
 
 
 @app.route('/create_conf/', methods=['GET', 'POST'])

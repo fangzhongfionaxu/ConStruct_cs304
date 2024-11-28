@@ -106,7 +106,7 @@ def create_conf():
 @app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
 def conf_detail(eid):
     conn = dbi.connect()
-    conference = c.get_eid(conn,eid)
+    conference = c.get_conf(conn,eid)
     if not conference:
         flash("Conference with eid=%s not found. Redirecting to create conference page." %eid)
         return redirect(url_for('create_conf'))

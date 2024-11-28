@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h2>Account Detail Page</h2>
+
+<h1>{{title}}</h1>
+
+<body>
+</div>
+<table>
+    <tr>
+        <td><label for="user-id">ID</label></td>
+        <td><input id="user-id" name='user-id' value='{{uid}}'></td> 
+      </tr>
+    <tr>
+        <td><label for="name">Title</label></td>
+        <td><input id="name" name='name' value='{{name}}'></td> 
+      </tr>
+    <tr>
+        <td><label for="conf-description">Description</label></td>
+        <td><input id="conf-description" name="conf-description" value="{{descript}}"></td>
+      </tr>
+    <tr>
+        <td><label for="conf-industry">Industry</label></td>
+        <td><input id="conf-industry" name='conf-industry' value='{{industry}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-location">Location</label></td>
+        <td><input id="conf-location" name='conf-location' value='{{location}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-start">Start Date</label></td>
+        <td><input id="conf-start" name='conf-start' value='{{start_date}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-end">End Date</label></td>
+        <td><input id="conf-end" name='conf-end' value='{{end_date}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-host">Host</label></td>
+        <td><input id="conf-host" name='conf-host' value='{{host}}'></td>
+      </tr>
+</table>
+
+
+
+</body>
+{% endblock %}

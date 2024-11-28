@@ -82,7 +82,16 @@ def create_account():
         return redirect(url_for('home')) #redirect to user account page
 """ def user_detail(uid):
  """    
-
+@app.route('/account_detail/<uid>', methods=['GET','POST']) #home
+def account_detail(uid):
+    conn = dbi.connect()
+    conference = c.get_eid(conn,eid)
+    if not conference:
+        flash("Conference with eid=%s not found. Redirecting to create conference page." %eid)
+        return redirect(url_for('create_conf'))
+    return render_template('conf_detail.html',**conference)
+    return render_template('account_detail.html',
+                           title = 'Account Detail Page')
 
 @app.route('/create_conf/', methods=['GET', 'POST'])
 def create_conf():
@@ -112,6 +121,7 @@ def conf_detail(eid):
         return redirect(url_for('create_conf'))
     return render_template('conf_detail.html',**conference)
     
+
 
 
 if __name__ == '__main__':

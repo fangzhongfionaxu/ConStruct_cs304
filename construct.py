@@ -27,11 +27,17 @@ def insert_conf(conn, title, descript, industry, location, start_date, end_date,
     new_eid = (max_eid or 0) + 1 """
     curs.execute(sql, [title,descript,industry,location,start_date,end_date,host])
     conn.commit()
-    curs.execut('select last_insert_id()')
+    curs.execute('select last_insert_id()')
     new_event = curs.fetchone()
     new_eid = new_event[0]
     return new_eid
 
+def get_conf(conn,eid):
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from events where eid = %s'
+    curs.execute(sql, [eid])
+    conference = curs.fetchone()
+    return conference
 
 
 def insert_user(conn, name, phnum, email, password, cname): #create_account page, return new uid

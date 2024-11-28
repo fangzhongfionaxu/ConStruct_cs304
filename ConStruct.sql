@@ -19,7 +19,7 @@ CREATE TABLE users  (
 
     uid int not null auto_increment, 
     name varchar(40), 
-    phnum int,
+    phnum char(10),
     email varchar(40),
     password varchar(30),
     cid int,

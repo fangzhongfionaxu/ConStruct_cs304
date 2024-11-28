@@ -65,4 +65,10 @@ def insert_or_get_cid(conn, cname): #insert new company if input company does no
         cid = row['cid']
         return cid
 
-def 
+def get_user(conn,uid):
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from users where uid = %s'
+    curs.execute(sql, uid)
+    user = curs.fetchone()
+    return user
+    

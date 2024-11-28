@@ -2,8 +2,6 @@
 
 {% block main_content %}
 
-<h2>Account Detail Page</h2>
-
 <h1>{{title}}</h1>
 
 <body>
@@ -14,33 +12,26 @@
         <td><input id="user-id" name='user-id' value='{{uid}}'></td> 
       </tr>
     <tr>
-        <td><label for="name">Title</label></td>
+        <td><label for="name">Name</label></td>
         <td><input id="name" name='name' value='{{name}}'></td> 
       </tr>
     <tr>
-        <td><label for="conf-description">Description</label></td>
-        <td><input id="conf-description" name="conf-description" value="{{descript}}"></td>
+        <td><label for="phnum">phone number</label></td>
+        <td><input id="phnum" name="phnum" value="{{phnum}}"></td>
       </tr>
     <tr>
-        <td><label for="conf-industry">Industry</label></td>
-        <td><input id="conf-industry" name='conf-industry' value='{{industry}}'></td>
+        <td><label for="email">email</label></td>
+        <td><input id="email" name='email' value='{{email}}'></td>
       </tr>
     <tr>
-        <td><label for="conf-location">Location</label></td>
-        <td><input id="conf-location" name='conf-location' value='{{location}}'></td>
+        <td><label for="password">password</label></td>
+        <td><input id="password" name='password' value='{{password}}'></td>
       </tr>
     <tr>
-        <td><label for="conf-start">Start Date</label></td>
-        <td><input id="conf-start" name='conf-start' value='{{start_date}}'></td>
+        <td><label for="cid">companyid</label></td>
+        <td><input id="cid" name='cid' value='{{cid}}'></td>
       </tr>
-    <tr>
-        <td><label for="conf-end">End Date</label></td>
-        <td><input id="conf-end" name='conf-end' value='{{end_date}}'></td>
-      </tr>
-    <tr>
-        <td><label for="conf-host">Host</label></td>
-        <td><input id="conf-host" name='conf-host' value='{{host}}'></td>
-      </tr>
+   
 </table>
 
 

@@ -1,4 +1,4 @@
-from flask import (Flask, render_template, make_response, url_for, request,
+from flask import (Flask, render_template, make_response, url_for, request, 
                    redirect, flash, session, send_from_directory, jsonify)
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
@@ -77,12 +77,15 @@ def create_account():
         email = request.form.get('email')
         password = request.form.get('password')
         cname = request.form.get('company')
+        if not name or not phnum or not email or not password:
+            flash("All fields are required to create a new account")
+            return render_template('create_account.html',page_title='Create Account Page')
         new_uid = c.insert_user(conn, name, phnum, email, password, cname) #when we have the login page, will redirect to loggedin browsing page
+        flash('New account created successfully')
+        return redirect(url_for('account_detail',uid = new_uid)) #redirect to user detail page
 
-        return redirect(url_for('account_detail',uid = new_uid)) #redirect to user account page
-""" def user_detail(uid):
- """    
-@app.route('/account_detail/<uid>', methods=['GET','POST']) #home
+
+@app.route('/account_detail/<uid>', methods=['GET','POST']) #user detail (account detail) page
 def account_detail(uid):
     conn = dbi.connect()
     user = c.get_user(conn,uid)

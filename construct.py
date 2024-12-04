@@ -27,9 +27,9 @@ def insert_conf(conn, title, descript, industry, location, start_date, end_date,
     new_eid = (max_eid or 0) + 1 """
     curs.execute(sql, [title,descript,industry,location,start_date,end_date,host])
     conn.commit()
-    curs.execute('select last_insert_id()')
+    curs.execute('select last_insert_id() as last_id')
     new_event = curs.fetchone()
-    new_eid = new_event[0]
+    new_eid = new_event['last_id']
     return new_eid
 
 def get_conf(conn,eid):

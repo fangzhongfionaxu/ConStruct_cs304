@@ -1,0 +1,656 @@
+from flask import (Flask, render_template, make_response, url_for, request,
+                   redirect, flash, session, send_from_directory, jsonify)
+from werkzeug.utils import secure_filename
+app = Flask(__name__)
+
+# one or the other of these. Defaults to MySQL (PyMySQL)
+# change comment characters to switch to SQLite
+
+import cs304dbi as dbi
+# import cs304dbi_sqlite3 as dbi
+import construct as c
+import secrets
+dbi.conf('construct_db')
+
+app.secret_key = 'your secret here'
+# replace that with a random key
+app.secret_key = secrets.token_hex()
+
+# This gets us better error messages for certain common request errors
+app.config['TRAP_BAD_REQUEST_ERRORS'] = True
+
+
+@app.route('/') #home
+def home():
+    return render_template('main.html',
+                           page_title='Main Page')
+
+# You will probably not need the routes below, but they are here
+# just in case. Please delete them if you are not using them
+
+
+@app.route('/greet/', methods=["GET", "POST"])
+def greet():
+    if request.method == 'GET':
+        return render_template('greet.html',
+                               page_title='Form to collect username')
+    else:
+        try:
+            username = request.form['username'] # throws error if there's trouble
+            flash('form submission successful')
+            return render_template('greet.html',
+                                   page_title='Welcome '+username,
+                                   name=username)
+
+        except Exception as err:
+            flash('form submission error'+str(err))
+            return redirect( url_for('index') )
+
+# This route displays all the data from the submitted form onto the rendered page
+
+
+
+@app.route('/browse/') #home
+def browse():
+    
+    return render_template('browse_lookup.html',
+                           page_title='Browsing Page')
+
+@app.route('/login/') #home
+def login():
+    
+    return render_template('login.html',
+                           page_title='Login Page')
+
+
+@app.route('/create_account/', methods=['GET','POST']) #home
+def create_account():
+    conn = dbi.connect()
+    if request.method == 'GET':
+        return render_template('create_account.html',  
+                                  
+                           page_title='Create Account Page')
+
+    elif request.method == 'POST':
+        name = request.form.get('name')
+        phnum = request.form.get('phnum')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        cname = request.form.get('company')
+        new_uid = c.insert_user(conn, name, phnum, email, password, cname) #when we have the login page, will redirect to loggedin browsing page
+
+        return redirect(url_for('account_detail',uid = new_uid)) #redirect to user account page
+""" def user_detail(uid):
+ """    
+@app.route('/account_detail/<uid>', methods=['GET','POST']) #home
+def account_detail(uid):
+    conn = dbi.connect()
+    user = c.get_user(conn,uid)
+    if not user:
+        flash("User not found. Redirecting to create conference page.")
+        return redirect(url_for('create_account'))
+    return render_template('account_detail.html',title ='Account Detail Page', **user)
+
+
+@app.route('/create_conf/', methods=['GET', 'POST'])
+def create_conf():
+    if request.method == 'POST':
+        title = request.form.get('conf-title')
+        descript = request.form.get('conf-description')
+        industry = request.form.get('conf-industry')
+        location = request.form.get('conf-location')
+        start_date = request.form.get('conf-start')
+        end_date = request.form.get('conf-end')
+        host = request.form.get('conf-host')
+        if not title or not descript or industry  == 'none' or not location or not start_date or not end_date or not host:
+            flash("All fields are required to create a new conference")
+            return render_template('create_conf.html')
+        conn = dbi.connect()
+        new_eid = c.insert_conf(conn, title, descript,industry,location,start_date,end_date,host)
+        flash("Conference created successfully!")
+        return redirect(url_for('conf_detail', eid=new_eid)) # go to conf detail page
+    return render_template('create_conf.html')
+
+@app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
+def conf_detail(eid):
+    conn = dbi.connect()
+    conference = c.get_conf(conn,eid)
+    if not conference:
+        flash("Conference with eid=%s not found. Redirecting to create conference page." %eid)
+        return redirect(url_for('create_conf'))
+    return render_template('conf_detail.html',**conference)
+    
+
+
+
+if __name__ == '__main__':
+    import sys, os
+    if len(sys.argv) > 1:
+        # arg, if any, is the desired port number
+        port = int(sys.argv[1])
+        assert(port>1024)
+    else:
+        port = os.getuid()
+    # set this local variable to 'wmdb' or your personal or team db
+    db_to_use = 'construct_db' 
+    print(f'will connect to {db_to_use}')
+    dbi.conf(db_to_use)
+    app.debug = True
+    app.run('0.0.0.0',port)
+import cs304dbi as dbi
+from flask import (Flask, render_template, make_response, url_for, request,
+                   redirect, flash, session, send_from_directory, jsonify)
+from werkzeug.utils import secure_filename
+app = Flask(__name__)
+
+
+def select_conf(conn): #browse not done yet
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from movie where tt = %s'
+    curs.execute(sql,[tt])
+    result = curs.fetchone()
+    if result:  
+        flash("Cannot insert movie, ID already exist in database")
+        return tt
+    else:
+        sql = 'insert into movie (tt, title, `release`, director, addedby) values (%s,%s, %s, %s, %s)'
+        curs.execute(sql,[tt, title, year, director, 10027])
+        conn.commit()
+    return tt
+
+def insert_conf(conn, title, descript, industry, location, start_date, end_date, host): #create_conf page
+    curs = dbi.dict_cursor(conn)
+    sql = 'insert into events(title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s)'
+    """ curs.execute("select max(eid) from events")
+    max_eid = curs.fetchone()[0]
+    new_eid = (max_eid or 0) + 1 """
+    curs.execute(sql, [title,descript,industry,location,start_date,end_date,host])
+    conn.commit()
+    curs.execute('select last_insert_id()')
+    new_event = curs.fetchone()
+    new_eid = new_event[0]
+    return new_eid
+
+def get_conf(conn,eid):
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from events where eid = %s'
+    curs.execute(sql, [eid])
+    conference = curs.fetchone()
+    return conference
+
+
+def insert_user(conn, name, phnum, email, password, cname): #create_account page, return new uid
+    curs = dbi.dict_cursor(conn)
+    cid = insert_or_get_cid(conn, cname)
+    print(cid, type(cid))
+    sql = 'insert into users (name, phnum , email, password, cid) values (%s,%s,%s,%s,%s )'
+    sql2 = 'select last_insert_id() as uid'
+    curs.execute(sql,[name, phnum , email, password, cid])
+    conn.commit()
+
+    curs.execute(sql2)
+    row = curs.fetchone()
+    uid = row['uid']
+    return uid
+
+
+def insert_or_get_cid(conn, cname): #insert new company if input company does not exist, select cid if it does; return new cid
+    curs = dbi.dict_cursor(conn)
+    select_c = 'select cid from companies where name like %s'
+    curs.execute(select_c, ['%'+cname+'%'])
+    exist = curs.fetchone()
+    if exist:
+        return exist['cid']
+    else:
+        insert = 'insert into companies (name) values (%s )'
+        curs.execute(insert,[cname])
+        conn.commit()
+        curs.execute("select last_insert_id() as cid")
+        row = curs.fetchone()
+        cid = row['cid']
+        return cid
+
+def get_user(conn,uid):
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from users where uid = %s'
+    curs.execute(sql, uid)
+    user = curs.fetchone()
+    return user
+    use construct_db;
+-- Fangzhong Xu and Ashley Cong
+
+drop table if exists attendees;
+drop table if exists events;
+drop table if exists users;
+drop table if exists companies;
+
+CREATE TABLE companies(
+    cid int auto_increment,
+    name varchar(100),
+    
+    PRIMARY KEY (cid)
+
+)
+ENGINE = InnoDB;
+
+CREATE TABLE users  ( 
+
+    uid int not null auto_increment, 
+    name varchar(40), 
+    phnum char(10),
+    email varchar(40),
+    password varchar(30),
+    cid int,
+
+    PRIMARY Key (uid),
+    foreign key (cid) references companies(cid)
+        on update cascade
+        on delete cascade
+)
+ENGINE = InnoDB;
+
+CREATE TABLE events  ( 
+
+    eid  int auto_increment, 
+    title varchar(60), 
+    descript varchar(1000),
+    host int, -- is uid--[ref: > user.uid]
+    industry enum('Academic','Energy',  'Materials', 'Industrials',  'Consumer Discretionary/Staples', 'Health Care', 
+     'Financials', 'Information Technology', 'Real Estate',  'Communication Services', 'Utilities','Other') ,
+    location varchar(100),
+    start_date datetime, -- check if format fits
+    end_date datetime,
+
+    PRIMARY Key (eid),
+    index (title),
+    foreign key (host) references users(uid)
+        on update restrict
+        on delete restrict -- cannot delete this user if the user is hosting an event
+)
+ENGINE = InnoDB;
+
+CREATE TABLE attendees(
+    eid int,
+    aid int, -- attendee
+    checked_in boolean,
+    foreign key (eid) references events(eid)
+        on update restrict
+        on delete restrict,
+    foreign key (aid) references users(uid)
+        on update cascade
+        on delete cascade
+)
+ENGINE = InnoDB;
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h1>{{title}}</h1>
+
+<body>
+</div>
+<table>
+    <tr>
+        <td><label for="user-id">ID</label></td>
+        <td><input id="user-id" name='user-id' value='{{uid}}'></td> 
+      </tr>
+    <tr>
+        <td><label for="name">Name</label></td>
+        <td><input id="name" name='name' value='{{name}}'></td> 
+      </tr>
+    <tr>
+        <td><label for="phnum">phone number</label></td>
+        <td><input id="phnum" name="phnum" value="{{phnum}}"></td>
+      </tr>
+    <tr>
+        <td><label for="email">email</label></td>
+        <td><input id="email" name='email' value='{{email}}'></td>
+      </tr>
+    <tr>
+        <td><label for="password">password</label></td>
+        <td><input id="password" name='password' value='{{password}}'></td>
+      </tr>
+    <tr>
+        <td><label for="cid">companyid</label></td>
+        <td><input id="cid" name='cid' value='{{cid}}'></td>
+      </tr>
+   
+</table>
+
+
+
+</body>
+{% endblock %}<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <!-- for mobile-friendly pages -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name=author content="">
+    <title>{{ page_title }}</title>
+    <link rel='stylesheet' href="{{url_for('static', filename = 'style.css')}}">
+    {% block head_stuff %} {% endblock %}
+</head>
+<body>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div id="messages">
+  {% for msg in messages %}
+  <p>{{msg}}</p>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+            
+{% block nav %}
+<nav>
+  <ul>
+    <li><a href="{{url_for('home')}}">home</a></li>
+    <li><a href="{{url_for('login')}}">login</a></li>
+    <li><a href="{{url_for('browse')}}">browse</a></li>
+
+  </ul>
+</nav>
+{% endblock %}
+
+{% block main_content %}
+<h1>Welcome!to ConStruct</h1>
+<h2> Please choose create or login to account, or browse for events</h2>
+
+{% endblock %}
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  {% block end_scripts %}
+  {% endblock %}
+  
+</body>
+</html>
+{% extends "base.html" %}
+
+
+
+{% block main_content %}
+
+<h1>Browsing Page</h1>
+
+<!-- <p>a display of all upcoming conferences in the database for users to scroll and browse through. There will be 3 filters at the top of the browsing page: a search bar at the top, which will consist of a keyword search option,  a dropdown menu of list of companies in our database (to search conferences associated with a certain company), and a list of industries to filter the search. All these search options can work on their own or in combination with another. 
+    All upcoming conferences shown in the browsing page have hyperlinks to it. Users will be able to click into links to get to the page of that specific conference to read the details of it or register to attend the conference. I
+</p>    
+<!-- two forms, both sending data to the same back-end route -->
+
+<h2>keyword search form</h2>
+
+<!-- a form that uses POST -->
+
+<form method="post" action="{{url_for('search_bar')}}">
+<p><label>Name:
+    <input required type="text" name="user" size="50" placeholder="Arthur, King of the Britons"></label></p>
+
+<p><label>Quest:
+    <textarea required name="quest" rows="3" cols="50" placeholder="To seek the grail"></textarea>
+</label></p>
+
+<p><label>Favorite Color?
+        <select required name="color">
+            <option value="">choose</option>
+            <option>Blue</option>
+            <option value="yellow">No, yel...</option>
+        </select>
+</label></p>
+
+<p><input type="submit" value="process form">
+</form>
+
+<!-- a nearly identical form that uses GET -->
+
+<h2>GET form</h2>
+
+<form method="get" action="{{url_for('search_bar')}}">
+<p><label>Name:
+    <input required type="text" name="user" size="50" placeholder="Arthur, King of the Britons"></label></p>
+
+<p><label>Quest:
+    <textarea required name="quest" rows="3" cols="50" placeholder="To seek the grail"></textarea>
+</label></p>
+
+<p><label>Favorite Color?
+        <select required name="color">
+            <option value="">choose</option>
+            <option>Blue</option>
+            <option value="yellow">No, yel...</option>
+        </select>
+</label></p>
+
+<p><input type="submit" value="process form">
+</form> -->
+
+{% endblock %}
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h2>Conference Detail Page</h2>
+
+<p>{{title}}</p>
+
+<body>
+</div>
+<table>
+    <tr>
+        <td><label for="conf-id">ID</label></td>
+        <td><input id="conf-id" name='conf-id' value='{{eid}}'></td> 
+      </tr>
+    <tr>
+        <td><label for="conf-title">Title</label></td>
+        <td><input id="conf-title" name='conf-title' value='{{title}}'></td> 
+      </tr>
+    <tr>
+        <td><label for="conf-description">Description</label></td>
+        <td><input id="conf-description" name="conf-description" value="{{descript}}"></td>
+      </tr>
+    <tr>
+        <td><label for="conf-industry">Industry</label></td>
+        <td><input id="conf-industry" name='conf-industry' value='{{industry}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-location">Location</label></td>
+        <td><input id="conf-location" name='conf-location' value='{{location}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-start">Start Date</label></td>
+        <td><input id="conf-start" name='conf-start' value='{{start_date}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-end">End Date</label></td>
+        <td><input id="conf-end" name='conf-end' value='{{end_date}}'></td>
+      </tr>
+    <tr>
+        <td><label for="conf-host">Host</label></td>
+        <td><input id="conf-host" name='conf-host' value='{{host}}'></td>
+      </tr>
+</table>
+
+
+
+</body>
+{% endblock %}{% extends "base.html" %}
+
+{% block main_content %}
+
+<h1> Create a New Account {{name}}</h1>
+
+<p>Please fill out the following information to create a ConStruct account:</p>
+
+<!--uid int, 
+name varchar(40), 
+phnum int,
+email varchar(40),
+password varchar(30),
+cid int -->
+
+<form method=post action="/create_account/">
+  <fieldset>
+  <legend>Account Information</legend>
+  <table>
+    <!--uid will be added in the database but not part of the input-->
+  <tr><td><label for="name"> firstname and lastname:</label></td>
+      <td><input id="name" type="text" name="name"></td></tr>
+  <tr><td><label for="phnum"> phone number:</label></td>
+      <td><input id="phnum" type="text" name="phnum"></td></tr>
+  <tr><td><label for="email" > email:</label></td>
+      <td><input id="email" type="email" name="email"></td></tr>
+  <tr><td><label for="password" > password:</label></td>
+      <td><input id="password" type="text" name="password"></td></tr>
+  <tr><td><label for="company" > company:</label></td>
+      <td><input id="company" type="text" name="company"></td></tr>
+  </table>
+  </fieldset>
+
+  <p> <input type='submit' value='submit'> </p>
+</form>
+
+{% endblock %}
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h2>Create A New Conference!</h2>
+
+<form method=post action="">
+    <fieldset>
+        <legend>Conference Information</legend>
+        <table>
+        <tr><td><label for="conf-title" accesskey="i">(i) Conference Title:</label></td>
+            <td><input id="conf-title" type="text" name="conf-title"></td></tr>
+        <tr><td><label for="conf-description" accesskey="t">(t) Conference Description:</label></td>
+            <td><input id="conf-description" type="text" name="conf-description"></td></tr>
+        <tr><td><label for="conf-location" accesskey="r">(r) Conference Location:</label></td>
+            <td><input id="conf-location" type="text" name="conf-location"></td></tr>
+        <tr><td><label for="conf-start" accesskey="y">(y) Conference Start Date:</label></td>
+            <td><input id="conf-start" type="text" name="conf-start"></td></tr>
+        <tr><td><label for="conf-end" accesskey="u">(u) Conference End Date:</label></td>
+            <td><input id="conf-end" type="text" name="conf-end"></td></tr>
+            <label for="conf-industry">Industry:</label>
+            <select id="conf-industry" name="conf-industry">
+            <option value="none">Choose One</option>
+                <option value="Academic">Academic</option>
+                <option value="Energy">Energy</option>
+                <option value="Materials">Materials</option>
+                <option value="Industrials">Industrials</option>
+                <option value="Consumer Discretionary/Staples'">Consumer Discretionary/Staples'</option>
+                <option value="Health Care">Health Care</option>
+                <option value="Financials">Financials</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Communication Services">Communication Services</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Other">Other</option>
+                  </select>
+        <tr><td><label for="conf-host" accesskey="u">(u) Conference Host (User ID):</label></td>
+            <td><input id="conf-host" type="text" name="conf-host"></td></tr>
+        </table>
+        </fieldset>
+        <p> <input type='submit' value='Submit'> </p>
+
+</form>
+
+{% endblock %}{% extends "base.html" %}
+
+{% block main_content %}
+
+<h1>Login Page</h1>
+
+
+{% endblock %}
+{% extends "base.html" %}
+
+{% block main_content %}
+<h1>Welcome to ConStruct!</h1>
+
+
+<h2> Please choose create or login to account, or browse for events</h2>
+
+
+<p>Click  <a href="{{ url_for('create_conf') }}"> here</a> to create a Conference page.</p>
+
+<p>Click  <a href="{{ url_for('create_account') }}"> here</a> to create an Account.</p>
+
+{% endblock %}/* the --color-header and others are CSS variables, which we access later. 
+*/
+
+HTML {
+    --color-header: #007ea9;  /* color for H1-H6 and others. was deepskyblue but poor contrast. */
+    --color-hilite: #b50000;  /* was red, but this avoids WAVE contrast errors */ 
+    --color-focus: #56B929;
+    --font-family: Verdana;
+    font-family: var(--font-family)
+}
+
+/* For flashed messages; make them stand out using red and italics */
+
+#messages {
+    color: var(--color-hilite);
+    font-style: italic;
+}
+
+
+h1 {
+    font-size: 200%;
+    color: var(--color-header);
+}
+
+h2, h3 {
+    color: var(--color-header);
+}
+    
+
+/* for a simple navbar. Talk to Scott if you want drop-downs. */
+nav > ul {
+    display: flex;
+    flex-direction: row;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+nav > ul > li {
+    flex: 0 0 auto;
+    width: 15em; 
+}
+
+nav button, nav a {
+    display: block;
+    box-sizing: border-box; /* easier to make button and A the same size */
+    width: 100%;
+    height: 40px;
+    padding: 0px;
+    padding-bottom: 5px;
+    background-color: var(--color-header); /* was #3498db */
+    border: 2px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    /* Firefox uses font -apple-system unless I repeat the font spec here. */
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+/* Only the top-level buttons are centered; lower ones are left-aligned. */
+nav > ul > li > button , nav > ul > li > a {
+    text-align: center;
+}
+
+/* because of the margin trick, this can only be used for the last element */
+
+nav li.right {
+    margin-left: auto;
+}
+
+nav button:hover, button:focus, nav a:hover, nav a:focus {
+    background-color: var(--color-focus);
+}
+

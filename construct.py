@@ -22,9 +22,7 @@ def select_conf(conn): #browse not done yet
 def insert_conf(conn, title, descript, industry, location, start_date, end_date, host): #create_conf page
     curs = dbi.dict_cursor(conn)
     sql = 'insert into events(title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s)'
-    """ curs.execute("select max(eid) from events")
-    max_eid = curs.fetchone()[0]
-    new_eid = (max_eid or 0) + 1 """
+
     curs.execute(sql, [title,descript,industry,location,start_date,end_date,host])
     conn.commit()
     curs.execute('select last_insert_id() as last_id')
@@ -73,8 +71,9 @@ def insert_or_get_cid(conn, cname): #insert new company if input company does no
 
 def get_user(conn,uid):
     curs = dbi.dict_cursor(conn)
-    sql = 'select * from users where uid = %s'
+    sql = 'select u.uid, u.name, u.phnum, u.email, u.password, c.name from users u, companies c where uid = %s and c.cid = u.cid'
     curs.execute(sql, uid)
     user = curs.fetchone()
+    
     return user
     

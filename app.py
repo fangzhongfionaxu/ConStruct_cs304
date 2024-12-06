@@ -25,28 +25,6 @@ def home():
     return render_template('main.html',
                            page_title='Main Page')
 
-# You will probably not need the routes below, but they are here
-# just in case. Please delete them if you are not using them
-
-
-@app.route('/greet/', methods=["GET", "POST"])
-def greet():
-    if request.method == 'GET':
-        return render_template('greet.html',
-                               page_title='Form to collect username')
-    else:
-        try:
-            username = request.form['username'] # throws error if there's trouble
-            flash('form submission successful')
-            return render_template('greet.html',
-                                   page_title='Welcome '+username,
-                                   name=username)
-
-        except Exception as err:
-            flash('form submission error'+str(err))
-            return redirect( url_for('index') )
-
-# This route displays all the data from the submitted form onto the rendered page
 
 
 
@@ -65,13 +43,14 @@ def login():
 
 @app.route('/create_account/', methods=['GET','POST']) #home
 def create_account():
-    conn = dbi.connect()
+    
     if request.method == 'GET':
         return render_template('create_account.html',  
                                   
                            page_title='Create Account Page')
 
     elif request.method == 'POST':
+        conn = dbi.connect()
         name = request.form.get('name')
         phnum = request.form.get('phnum')
         email = request.form.get('email')
@@ -90,7 +69,7 @@ def account_detail(uid):
     conn = dbi.connect()
     user = c.get_user(conn,uid)
     if not user:
-        flash("User not found. Redirecting to create conference page.")
+        flash("User not found. Redirecting to create account page.")
         return redirect(url_for('create_account'))
     return render_template('account_detail.html',title ='Account Detail Page', **user)
 

@@ -22,7 +22,10 @@ def select_conf(conn): #browse not done yet
 def insert_conf(conn, title, descript, industry, location, start_date, end_date, host): #create_conf page
     curs = dbi.dict_cursor(conn)
     sql = 'insert into events(title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s)'
+<<<<<<< HEAD
 
+=======
+>>>>>>> c3dd9268d4f14e787ad63c8c04ffcf53fcfd9bc2
     curs.execute(sql, [title,descript,industry,location,start_date,end_date,host])
     conn.commit()
     curs.execute('select last_insert_id() as last_id')
@@ -30,13 +33,19 @@ def insert_conf(conn, title, descript, industry, location, start_date, end_date,
     new_eid = new_event['last_id']
     return new_eid
 
-def get_conf(conn,eid):
+def get_conf(conn,eid): #get one conf from eid
     curs = dbi.dict_cursor(conn)
     sql = 'select * from events where eid = %s'
     curs.execute(sql, [eid])
     conference = curs.fetchone()
     return conference
 
+def get_conf_all(conn, query): #get all conf from title
+    curs = dbi.dict_cursor(conn)
+    event = "select title, eid from events where title like %s"
+    curs.execute(event, ['%' + query + '%'])
+    e = curs.fetchall()
+    return e
 
 def insert_user(conn, name, phnum, email, password, cname): #create_account page, return new uid
     curs = dbi.dict_cursor(conn)

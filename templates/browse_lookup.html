@@ -6,55 +6,33 @@
 
 <h1>Browsing Page</h1>
 
-<!-- <p>a display of all upcoming conferences in the database for users to scroll and browse through. There will be 3 filters at the top of the browsing page: a search bar at the top, which will consist of a keyword search option,  a dropdown menu of list of companies in our database (to search conferences associated with a certain company), and a list of industries to filter the search. All these search options can work on their own or in combination with another. 
-    All upcoming conferences shown in the browsing page have hyperlinks to it. Users will be able to click into links to get to the page of that specific conference to read the details of it or register to attend the conference. I
-</p>    
-<!-- two forms, both sending data to the same back-end route -->
+<h2>Keyword Search Form</h2>
 
-<h2>keyword search form</h2>
+<form method="GET" action="/browse/">
+    <label for="keyword">Search Conferenes:</label>
+    <input type="text" id="keyword" name="query" value="{{ query|default('') }}">
+    
+ <!--    <label for="Industry">Filter by Industry:</label>
+    <select id="industry" name="industry">
+        <option value="">All Industries</option>
+        {% for ind in industries %}
+        <option value="{{ ind }}" {% if ind == selected_industry %}selected{% endif %}>
+            {{ ind }}
+        </option>
+        {% endfor %}
+    </select>
+ -->
+    <input type="submit" value="Search">
+  </form>
 
-<!-- a form that uses POST -->
-
-<form method="post" action="{{url_for('search_bar')}}">
-<p><label>Name:
-    <input required type="text" name="user" size="50" placeholder="Arthur, King of the Britons"></label></p>
-
-<p><label>Quest:
-    <textarea required name="quest" rows="3" cols="50" placeholder="To seek the grail"></textarea>
-</label></p>
-
-<p><label>Favorite Color?
-        <select required name="color">
-            <option value="">choose</option>
-            <option>Blue</option>
-            <option value="yellow">No, yel...</option>
-        </select>
-</label></p>
-
-<p><input type="submit" value="process form">
-</form>
-
-<!-- a nearly identical form that uses GET -->
-
-<h2>GET form</h2>
-
-<form method="get" action="{{url_for('search_bar')}}">
-<p><label>Name:
-    <input required type="text" name="user" size="50" placeholder="Arthur, King of the Britons"></label></p>
-
-<p><label>Quest:
-    <textarea required name="quest" rows="3" cols="50" placeholder="To seek the grail"></textarea>
-</label></p>
-
-<p><label>Favorite Color?
-        <select required name="color">
-            <option value="">choose</option>
-            <option>Blue</option>
-            <option value="yellow">No, yel...</option>
-        </select>
-</label></p>
-
-<p><input type="submit" value="process form">
-</form> -->
-
+{% if length == 0 %}
+  <p> Sorry, no conferences found!</p>
+{% else %}
+<h3>Available Conferences:</h3>
+<ul>
+    {% for event in e%}
+  <li><a href= "{{url_for('conf_detail',eid=event['eid'])}}" >{{ event['title'] }}</a></li>
+{% endfor %}
+</ul>
+{% endif%}
 {% endblock %}

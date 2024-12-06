@@ -28,11 +28,37 @@ def home():
 
 
 
-@app.route('/browse/') #home
+@app.route('/browse/', methods = ["GET", "POST"]) #home
 def browse():
+    query = request.args.get('query')
+    conn = dbi.connect()
+    curs = dbi.dict_cursor(conn)
+    if query:
+        #Filter conferences based on the search
+        query = f"%{query}%"
+        curs.execute("select * from events where title like %s or descript like %s", (query, query))
+    else:
+        curs.execute("select * from events")
+    e = curs.fetchall()
+    length = len(e)
     
-    return render_template('browse_lookup.html',
-                           page_title='Browsing Page')
+    """ sql = "select * from events"
+    parameters = []
+    if query:
+        #Filter conferences based on keyword search
+        query = f"%{query}%"
+        sql += "where title like %s or descript like %s"
+        parameters.extend([query, query])
+    if industry:
+        #Filter conferences based on industry
+        sql += "and industry = %s"
+        parameters.append(industry)
+    curs.execute(sql, parameters)
+    e = curs.fetchall()
+    length = len(e) """
+    
+    return render_template('browse_lookup.html', e=e, query=query,length=length)
+
 
 @app.route('/login/') #home
 def login():

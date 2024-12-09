@@ -4,7 +4,7 @@
 
 {% block main_content %}
 
-<h1>Browsing Page</h1>
+
 
 <h2>Keyword Search Form</h2>
 
@@ -24,6 +24,31 @@
  -->
     <input type="submit" value="Search">
   </form>
+
+  <h2>Select Industries</h2>
+
+
+  <form method="GET" action="/browse/">
+      <label for="conf-industry">Industry:</label>
+            <select id="conf-industry" name="conf-industry">
+            <option value="none">Choose One</option>
+                <option value="Academic">Academic</option>
+                <option value="Energy">Energy</option>
+                <option value="Materials">Materials</option>
+                <option value="Industrials">Industrials</option>
+                <option value="Consumer Discretionary/Staples'">Consumer Discretionary/Staples'</option>
+                <option value="Health Care">Health Care</option>
+                <option value="Financials">Financials</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Communication Services">Communication Services</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Other">Other</option>
+                  </select>
+
+      <input type="submit" value="Industry">
+    </form>
+  
 
 {% if length == 0 %}
   <p> Sorry, no conferences found!</p>

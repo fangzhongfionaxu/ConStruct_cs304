@@ -6,8 +6,12 @@
 
 <form method=post action="">
     <fieldset>
-        <legend>Conference Information</legend>
+        <legend>Conference Information:</legend>
         <table>
+        <tr><td><label for="host">Host:</label></td>
+            <td> uid ({{uid}})</td>
+            
+            <td>email ({{email}})</td></tr>
         <tr><td><label for="conf-title">Conference Title:</label></td>
             <td><input id="conf-title" type="text" name="conf-title"></td></tr>
         <tr><td><label for="conf-description" >Conference Description:</label></td>
@@ -34,8 +38,8 @@
                 <option value="Utilities">Utilities</option>
                 <option value="Other">Other</option>
                   </select>
-        <tr><td><label for="conf-host" > Conference Host (User ID):</label></td>
-            <td><input id="conf-host" type="text" name="conf-host"></td></tr>
+                
+        
         </table>
         </fieldset>
         <p> <input type='submit' value='Submit'> </p>

@@ -2,7 +2,22 @@
 
 {% block main_content %}
 
-<h1>Login Page</h1>
+<h1>{{page_title}}</h1>
+<form method=post action="/login/">
+    <fieldset>
+    <legend>categories with "*" is required</legend>
+    <table> 
 
+    <tr><td><label for="email" > *email:</label></td>
+        <td><input id="email" type="email" name="email"></td></tr>
+    <tr><td><label for="password" > *password:</label></td>
+        <td><input id="password" type="password" name="password"></td></tr>
+    
+    </table>
+    </fieldset>
+  
+    <p> <input type='submit' value='submit'> </p>
+  </form>
+  
 
 {% endblock %}

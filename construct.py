@@ -1,31 +1,37 @@
 import cs304dbi as dbi
+import bcrypt
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify)
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 
-def select_conf(conn): #browse not done yet
+def select_conf(conn,query, industry): #select the number of 
     curs = dbi.dict_cursor(conn)
-    sql = 'select * from movie where tt = %s'
-    curs.execute(sql,[tt])
-    result = curs.fetchone()
-    if result:  
-        flash("Cannot insert movie, ID already exist in database")
-        return tt
+    if query and (industry is None):
+        #Filter conferences based on the search
+        query = f"%{query}%"
+        sql = 'select * from events where title like %s or descript like %s'
+        curs.execute(sql, (query, query))
+        
+    elif industry and (query is None):
+        sql = 'select * from events where industry like %s'
+        curs.execute(sql, industry)
+        
+    elif query and industry:
+        sql = 'select * from events where industry = %s and (title like %s or industry like %s)'
+        curs.execute(sql, (industry, query, query))
+        
     else:
-        sql = 'insert into movie (tt, title, `release`, director, addedby) values (%s,%s, %s, %s, %s)'
-        curs.execute(sql,[tt, title, year, director, 10027])
-        conn.commit()
-    return tt
+        curs.execute("select * from events")
+    events = curs.fetchall()
+    
+    return events
+
 
 def insert_conf(conn, title, descript, industry, location, start_date, end_date, host): #create_conf page
     curs = dbi.dict_cursor(conn)
     sql = 'insert into events(title,descript,industry,location,start_date,end_date,host) values (%s,%s,%s,%s,%s,%s,%s)'
-<<<<<<< HEAD
-
-=======
->>>>>>> c3dd9268d4f14e787ad63c8c04ffcf53fcfd9bc2
     curs.execute(sql, [title,descript,industry,location,start_date,end_date,host])
     conn.commit()
     curs.execute('select last_insert_id() as last_id')
@@ -51,14 +57,19 @@ def insert_user(conn, name, phnum, email, password, cname): #create_account page
     curs = dbi.dict_cursor(conn)
     cid = insert_or_get_cid(conn, cname)
     print(cid, type(cid))
-    sql = 'insert into users (name, phnum , email, password, cid) values (%s,%s,%s,%s,%s )'
+    
+
+    hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    stored = hashed.decode('utf-8')
+    sql = 'insert into users (name, phnum , email, hashedpswd, cid) values (%s,%s,%s,%s,%s )'
     sql2 = 'select last_insert_id() as uid'
-    curs.execute(sql,[name, phnum , email, password, cid])
+    curs.execute(sql,[name, phnum , email, stored, cid])
     conn.commit()
 
     curs.execute(sql2)
     row = curs.fetchone()
     uid = row['uid']
+
     return uid
 
 
@@ -80,9 +91,16 @@ def insert_or_get_cid(conn, cname): #insert new company if input company does no
 
 def get_user(conn,uid):
     curs = dbi.dict_cursor(conn)
-    sql = 'select u.uid, u.name, u.phnum, u.email, u.password, c.name from users u, companies c where uid = %s and c.cid = u.cid'
+    sql = 'select u.uid, u.name, u.phnum, u.email,  c.name from users u, companies c where uid = %s and c.cid = u.cid'
     curs.execute(sql, uid)
     user = curs.fetchone()
     
     return user
     
+
+def user_exist(conn,email): #loggin information exist
+    curs = dbi.dict_cursor(conn)
+    sql = "select uid, email, hashedpswd from users where email like %s"
+    curs.execute(sql, email)
+    user = curs.fetchone()
+    return user

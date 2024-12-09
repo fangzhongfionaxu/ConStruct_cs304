@@ -21,7 +21,7 @@ CREATE TABLE users  (
     name varchar(40), 
     phnum char(10),
     email varchar(40),
-    password varchar(30),
+    hashedpswd char(60),
     cid int,
 
     PRIMARY Key (uid),

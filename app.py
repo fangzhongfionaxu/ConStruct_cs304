@@ -83,8 +83,19 @@ def login():
             else:
                 flash('login incorrect. Try again or join')
                 return redirect( url_for('home'))
-
-
+            
+@app.route('/logout/', methods = ['GET','POST']) #home
+def logout():
+    if 'uid' in session:
+        
+        session.pop('uid')
+        session.pop('email')
+        session.pop('logged_in')
+        flash('You are logged out')
+        return redirect(url_for('home'))
+    else:
+        flash('you are not logged in. Please login or create account')
+        return redirect( url_for('home') )
 
 @app.route('/create_account/', methods=['GET','POST']) #need to add hashed to password section
 def create_account():
@@ -129,15 +140,20 @@ def create_account():
 
         return redirect(url_for('account_detail',uid = new_uid)) #redirect to user detail page
 
-
+@app.route('/account_detail/<uid>', defaults={'uid': None}, methods=["GET", "POST"])
 @app.route('/account_detail/<uid>', methods=['GET','POST']) #user detail (account detail) page
 def account_detail(uid):
-    conn = dbi.connect()
-    user = c.get_user(conn,uid)
-    if not user:
-        flash("User not found. Redirecting to create account page.")
-        return redirect(url_for('create_account'))
-    return render_template('account_detail.html',title ='Account Detail Page', **user)
+    if 'uid' in session:
+        uid = session['uid']
+        conn = dbi.connect()
+        user = c.get_user(conn,uid)
+        if not user:
+            flash("User not found. Redirecting to create account page.")
+            return redirect(url_for('create_account'))
+        return render_template('account_detail.html',title ='Account Detail Page', **user)
+    else:
+        flash('user not logged in, login or create account')
+        return redirect(url_for('home'))
 
 @app.route('/create_conf/<uid>', defaults={'uid': None}, methods=["GET", "POST"])
 @app.route('/create_conf/<uid>', methods=['GET', 'POST'])
@@ -166,7 +182,7 @@ def create_conf(uid):
             return redirect(url_for('conf_detail', eid=new_eid)) # go to conf detail page
         
     else:
-        flash('You are not loged in. Please login or create account before creating conference')
+        flash('You are not logged in. Please login or create account before creating conference')
         return redirect(url_for('home'))
    
     

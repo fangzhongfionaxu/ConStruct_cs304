@@ -8,22 +8,28 @@ app = Flask(__name__)
 
 def select_conf(conn,query, industry): #select the number of 
     curs = dbi.dict_cursor(conn)
-    if query and (industry is None):
+    
+    if query and industry =="none":
         #Filter conferences based on the search
         query = f"%{query}%"
         sql = 'select * from events where title like %s or descript like %s'
         curs.execute(sql, (query, query))
+        print (" use keyword")
         
-    elif industry and (query is None):
+    elif industry and (query == "None" or query ==""):
         sql = 'select * from events where industry like %s'
-        curs.execute(sql, industry)
+        curs.execute(sql, (industry,))
+        print (" use industry")
         
     elif query and industry:
-        sql = 'select * from events where industry = %s and (title like %s or industry like %s)'
+        query = f"%{query}%"
+        sql = 'select * from events where industry like %s and (title like %s or descript like %s)'
         curs.execute(sql, (industry, query, query))
+        print ("use both")
         
     else:
         curs.execute("select * from events")
+        print (" show all")
     events = curs.fetchall()
     
     return events

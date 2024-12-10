@@ -6,54 +6,42 @@
 
 
 
-<h2>Keyword Search Form</h2>
-
+<h1> Browse for conferences using keyword and industries search</h1>
 <form method="GET" action="/browse/">
+  <h2>Keyword Search Form</h2>
     <label for="keyword">Search Conferenes:</label>
     <input type="text" id="keyword" name="query" value="{{ query|default('') }}">
-    
- <!--    <label for="Industry">Filter by Industry:</label>
-    <select id="industry" name="industry">
-        <option value="">All Industries</option>
-        {% for ind in industries %}
-        <option value="{{ ind }}" {% if ind == selected_industry %}selected{% endif %}>
-            {{ ind }}
-        </option>
-        {% endfor %}
-    </select>
- -->
+
+
+  <h2>Select Industries</h2>
+  <label for="conf-industry">Industry:</label>
+        <select id="conf-industry" name="conf-industry">
+        <option value="none">Choose One</option>
+            <option value="Academic">Academic</option>
+            <option value="Energy">Energy</option>
+            <option value="Materials">Materials</option>
+            <option value="Industrials">Industrials</option>
+            <option value="Consumer Discretionary/Staples'">Consumer Discretionary/Staples'</option>
+            <option value="Health Care">Health Care</option>
+            <option value="Financials">Financials</option>
+            <option value="Information Technology">Information Technology</option>
+            <option value="Real Estate">Real Estate</option>
+            <option value="Communication Services">Communication Services</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Other">Other</option>
+              </select>
+
     <input type="submit" value="Search">
   </form>
 
-  <h2>Select Industries</h2>
-
-
-  <form method="GET" action="/browse/">
-      <label for="conf-industry">Industry:</label>
-            <select id="conf-industry" name="conf-industry">
-            <option value="none">Choose One</option>
-                <option value="Academic">Academic</option>
-                <option value="Energy">Energy</option>
-                <option value="Materials">Materials</option>
-                <option value="Industrials">Industrials</option>
-                <option value="Consumer Discretionary/Staples'">Consumer Discretionary/Staples'</option>
-                <option value="Health Care">Health Care</option>
-                <option value="Financials">Financials</option>
-                <option value="Information Technology">Information Technology</option>
-                <option value="Real Estate">Real Estate</option>
-                <option value="Communication Services">Communication Services</option>
-                <option value="Utilities">Utilities</option>
-                <option value="Other">Other</option>
-                  </select>
-
-      <input type="submit" value="Industry">
-    </form>
+    
   
 
 {% if length == 0 %}
   <p> Sorry, no conferences found!</p>
 {% else %}
 <h3>Available Conferences:</h3>
+<p> Keywords: {{query}}  |  Industry: {{industry}} </p>
 <ul>
     {% for event in e%}
   <li><a href= "{{url_for('conf_detail',eid=event['eid'])}}" >{{ event['title'] }}</a></li>

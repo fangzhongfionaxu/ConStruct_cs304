@@ -33,17 +33,20 @@ def home():
 def browse(uid):
     query = request.args.get('query')
     industry = request.args.get('conf-industry')
+    print(query)
+    print(industry)
     #session['email'] = user['email']
   
     if 'uid' in session:
         uid = session['uid']
-        email = session['email']
+       
         conn = dbi.connect()
         events = c.select_conf(conn,query, industry)
         sessvalue = request.cookies.get('session')
+        print (sessvalue)
         length = len(events)
         
-        return render_template('browse_lookup.html', page_title= "Browsing Page" , uid = uid , e=events, query=query,length=length)
+        return render_template('browse_lookup.html', page_title= "Browsing Page" , uid = uid , e=events, query=query, industry= industry, length=length)
     else:
         flash('You are not loged in. Please login or create account')
         return redirect(url_for('home'))

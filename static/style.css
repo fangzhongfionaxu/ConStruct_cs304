@@ -2,9 +2,9 @@
 */
 
 HTML {
-    --color-header: #007ea9;  /* color for H1-H6 and others. was deepskyblue but poor contrast. */
+    --color-header: #259416;  /* color for H1-H6 and others. was deepskyblue but poor contrast. */
     --color-hilite: #b50000;  /* was red, but this avoids WAVE contrast errors */ 
-    --color-focus: #56B929;
+    --color-focus: #69c83d;
     --font-family: Verdana;
     font-family: var(--font-family)
 }
@@ -19,7 +19,7 @@ HTML {
 
 h1 {
     font-size: 200%;
-    color: var(--color-header);
+    color: var(--color-focus);
 }
 
 h2, h3 {

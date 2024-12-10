@@ -118,8 +118,11 @@ def create_account():
             return render_template('create_account.html',page_title='Create Account Page')
         new_uid = c.insert_user(conn, name, phnum, email, password, cname) #when we have the login page, will redirect to loggedin browsing page
         flash('New account created successfully')
-        session['email'] = exist['email']
-        session['uid'] = exist['uid']
+        sql = 'select uid, name, phnum, email, cid from users where email like %s'
+        curs.execute(sql,[email])
+        user = curs.fetchone()
+        session['email'] = user['email']
+        session['uid'] = user['uid']
     
         session['logged_in'] = True
         session['visits'] = 1

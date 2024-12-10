@@ -1,5 +1,6 @@
 import cs304dbi as dbi
 import bcrypt
+import datetime
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify)
 from werkzeug.utils import secure_filename
@@ -8,6 +9,7 @@ app = Flask(__name__)
 
 def select_conf(conn,query, industry): #select the number of 
     curs = dbi.dict_cursor(conn)
+    current_date = datetime.datetime.now()
     if query == "None" or query =="":
         query = False
     if industry == "none" or industry == "":
@@ -16,24 +18,26 @@ def select_conf(conn,query, industry): #select the number of
     if query and (industry is False):
         #Filter conferences based on the search
         query = f"%{query}%"
-        sql = 'select * from events where title like %s or descript like %s'
-        curs.execute(sql, (query, query))
+        sql = 'select * from events where (title like %s or descript like %s) and end_date >= %s'
+        curs.execute(sql, (query, query, current_date))
         print (" use keyword")
         
     elif industry and (query is False):
-        sql = 'select * from events where industry like %s'
-        curs.execute(sql, (industry,))
+        sql = 'select * from events where industry like %s and end_date >= %s'
+        curs.execute(sql, (industry, current_date))
         print (" use industry")
         
     elif query and industry:
         query = f"%{query}%"
-        sql = 'select * from events where industry like %s and (title like %s or descript like %s)'
-        curs.execute(sql, (industry, query, query))
+        sql = 'select * from events where industry like %s and (title like %s or descript like %s) and end_date >= %s'
+        curs.execute(sql, (industry, query, query, current_date))
         print ("use both")
         
     else:
-        curs.execute("select * from events")
-        print ("show all")
+        sql = 'select * from events where end_date >= %s'
+        curs.execute(sql, (current_date))
+        print (" show all")
+    
     events = curs.fetchall()
     
     return events

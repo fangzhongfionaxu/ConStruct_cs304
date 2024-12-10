@@ -10,19 +10,15 @@ app = Flask(__name__)
 def select_conf(conn,query, industry): #select the number of 
     curs = dbi.dict_cursor(conn)
     current_date = datetime.datetime.now()
-    if query == "None" or query =="":
-        query = False
-    if industry == "none" or industry == "":
-        industry = False
-
-    if query and (industry is False):
+    
+    if query and industry =="none":
         #Filter conferences based on the search
         query = f"%{query}%"
         sql = 'select * from events where (title like %s or descript like %s) and end_date >= %s'
         curs.execute(sql, (query, query, current_date))
         print (" use keyword")
         
-    elif industry and (query is False):
+    elif industry and (query == "None" or query ==""):
         sql = 'select * from events where industry like %s and end_date >= %s'
         curs.execute(sql, (industry, current_date))
         print (" use industry")
@@ -37,7 +33,6 @@ def select_conf(conn,query, industry): #select the number of
         sql = 'select * from events where end_date >= %s'
         curs.execute(sql, (current_date))
         print (" show all")
-    
     events = curs.fetchall()
     
     return events

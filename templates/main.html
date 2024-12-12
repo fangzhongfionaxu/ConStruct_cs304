@@ -6,11 +6,17 @@
 
 <h2> Please choose create or login to account, or browse for events</h2>
 
+<div class="click">
+    <p>Click here to <a href="{{ url_for('login') }}"> login</a>.</p>
+</div>
 
-<p>Click here to <a href="{{ url_for('login') }}"> login</a>.</p>
+<div class="click">
+    <p>Click here to <a href="{{ url_for('create_account') }}">  create an account</a>.</p>
+</div>
 
-<p>Click here to <a href="{{ url_for('create_account') }}">  create an account</a>.</p>
+<div class="click">
+    <p>Click here to <a href="{{ url_for('create_conf') }}">  create a conference</a>.</p>
 
-<p>Click here to <a href="{{ url_for('create_conf') }}">  create a conference</a>.</p>
+</div>
 
 {% endblock %}

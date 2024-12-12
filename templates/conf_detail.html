@@ -4,46 +4,49 @@
 
 <h2>Conference Detail Page</h2>
 
-<p>{{title}}</p>
+
+<h3>{{title}}</h3>
 
 <body>
 </div>
 <table>
     <tr>
         <td><label for="conf-id">ID</label></td>
-        <td><input id="conf-id" name='conf-id' value='{{eid}}'></td> 
+        <td><input class="fill" id="conf-id" name='conf-id' value='{{eid}}' readonly></td> 
       </tr>
     <tr>
         <td><label for="conf-title">Title</label></td>
-        <td><input id="conf-title" name='conf-title' value='{{title}}'></td> 
+        <td><input class="fill" id="conf-title" name='conf-title' value='{{title}}' readonly></td> 
       </tr>
     <tr>
-        <td><label for="conf-description">Description</label></td>
-        <td><input id="conf-description" name="conf-description" value="{{descript}}"></td>
+        <td style="vertical-align: top;">
+          <label for="conf-description">Description</label></td>
+        <td>
+          <textarea class="fill" id="conf-description" name="conf-description" style="height: 100px; width: 100%; font-family: Arial;" readonly>{{descript}}</textarea></td>
       </tr>
     <tr>
         <td><label for="conf-industry">Industry</label></td>
-        <td><input id="conf-industry" name='conf-industry' value='{{industry}}'></td>
+        <td><input class="fill" id="conf-industry" name='conf-industry' value='{{industry}}' readonly></td>
       </tr>
     <tr>
         <td><label for="conf-location">Location</label></td>
-        <td><input id="conf-location" name='conf-location' value='{{location}}'></td>
+        <td><input class="fill" id="conf-location" name='conf-location' value='{{location}}' readonly></td>
       </tr>
     <tr>
         <td><label for="conf-start">Start Date</label></td>
-        <td><input id="conf-start" name='conf-start' value='{{start_date}}'></td>
+        <td><input class="fill" id="conf-start" name='conf-start' value='{{start_date}}' readonly></td>
       </tr>
     <tr>
         <td><label for="conf-end">End Date</label></td>
-        <td><input id="conf-end" name='conf-end' value='{{end_date}}'></td>
+        <td><input class="fill" id="conf-end" name='conf-end' value='{{end_date}}' readonly></td>
       </tr>
     <tr>
         <td><label for="conf-host">Host</label></td>
-        <td><input id="conf-host" name='conf-host' value='{{host}}'></td>
+        <td><input class="fill" id="conf-host" name='conf-host' value='{{host}}' readonly></td>
       </tr>
 
     
-    <button type="submit" class="registerbtn">Register</button>
+    <button type="submit" class="click">Register</button>
   </form>
 </table>
 

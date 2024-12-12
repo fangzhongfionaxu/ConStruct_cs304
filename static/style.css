@@ -5,7 +5,7 @@ HTML {
     --color-header: #259416;  /* color for H1-H6 and others. was deepskyblue but poor contrast. */
     --color-hilite: #b50000;  /* was red, but this avoids WAVE contrast errors */ 
     --color-focus: #69c83d;
-    --font-family: Verdana;
+    --font-family: Tahoma;
     font-family: var(--font-family)
 }
 
@@ -22,15 +22,20 @@ h1 {
     color: var(--color-focus);
 }
 
-h2, h3 {
+h2{
     color: var(--color-header);
+}
+
+h3{
+    font-size: 130%;
+    color: #227717
 }
     
 
-/* for a simple navbar. Talk to Scott if you want drop-downs. */
 nav > ul {
     display: flex;
     flex-direction: row;
+    text-decoration: none;
 }
 
 nav ul {
@@ -47,18 +52,24 @@ nav > ul > li {
 nav button, nav a {
     display: block;
     box-sizing: border-box; /* easier to make button and A the same size */
-    width: 100%;
+    width: 80%;
     height: 40px;
     padding: 0px;
     padding-bottom: 5px;
-    background-color: var(--color-header); /* was #3498db */
-    border: 2px solid black;
-    border-radius: 5px;
+    /*background-color: var(--color-header); was #3498db */
+    border: 2px solid #3bb82a;
+    border-radius: 8px;
     cursor: pointer;
     /* Firefox uses font -apple-system unless I repeat the font spec here. */
     font-family: var(--font-family);
     font-weight: bold;
     font-size: 1.4rem;
+}
+
+nav a:hover{
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.20), 0 17px 50px 0 rgba(0,0,0,0.14);
+    background-color: #4ef879; /* Green */
+    color: #ffffff;
 }
 
 /* Only the top-level buttons are centered; lower ones are left-aligned. */
@@ -72,7 +83,76 @@ nav li.right {
     margin-left: auto;
 }
 
-nav button:hover, button:focus, nav a:hover, nav a:focus {
+button:focus, nav a:hover, nav a:focus {
     background-color: var(--color-focus);
 }
 
+.click {
+    display: inline-block; /* Ensures the box wraps the content only */
+    border: 2px solid #3bb82a; /* Adds a border */
+    border-radius: 8px; /* Rounds the corners */
+    padding: 5px 8px; /* Adds spacing inside the box */
+    margin: 6px 0; /* Adds spacing between boxes */
+    background-color: #f9f9f9; /* Optional: Light background */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Shadow for depth */
+    text-align: center;
+}
+
+.click a{
+    text-decoration: none;
+    color:#b50000;
+}
+
+.click:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.20), 0 17px 50px 0 rgba(0,0,0,0.14);
+    background-color: #24ae46; /* Green */
+    color: #ffffff;
+}
+
+.conf-display{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Defines 4 columns of equal width */
+    gap: 15px; /* Adds spacing between items */
+    list-style-type: none; /* Removes bullet points */
+    padding: 0; /* Removes default padding of the <ul> */
+    margin: 0; 
+}
+
+.conf-display li {
+    position: relative; /* Ensures child elements are positioned relative to this box */
+    text-align: center;
+    border: 2px solid #3bb82a; /* Adds a border */
+    border-radius: 4px;
+    padding: 6px; /* Adds padding inside the box */
+    background-color: #f9f9f9; /* Optional: Light background color */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow for depth */
+    overflow: hidden;
+}
+
+.conf-display li:hover{
+    background-color: #3bc05c; /* Changes background on hover */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.conf-display li a {
+    display: block; /* Makes the link fill the entire box */
+    height: 100%; /* Ensures the link covers the box */
+    width: 100%;
+    text-decoration: none; /* Removes underline from links */
+    color: #3b82a0; /* Link color */
+    font-weight: bold; /* Makes the text bold */
+    font-size: 1rem; /* Adjusts the text size */
+}
+
+.conf-display li a:hover {
+    color: #f1efef; /* Changes text color on hover */
+}
+
+.fill{
+    padding: 10px; 
+    font-size: 14px; 
+    width: 100%; 
+    border: 1px solid #9c9a9a; 
+    border-radius: 4px;
+}

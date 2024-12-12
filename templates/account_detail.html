@@ -2,36 +2,37 @@
 
 {% block main_content %}
 
-<h1>{{title}}</h1>
+<h3>{{title}}</h3>
 
 <body>
-</div>
-<table>
+
+<form method="POST" action="{{url_for('account_detail', uid=user['uid'])}}">
+  <table>
     <tr>
-        <td><label for="user-id">ID</label></td>
-        <td>{{uid}}</td>  
+      <td><label for="user-id">ID</label></td>
+      <td><input class="fill" id="user-id" name="uid" value="{{ user['uid'] }}" readonly></td>
       </tr>
     <tr>
         <td><label for="name">Name</label></td>
-        <td><input id="name" name='name' value='{{name}}'></td> 
+        <td><input class="fill" id="name" name='name' value="{{user['name']}}"></td> 
       </tr>
     <tr>
         <td><label for="phnum">phone number</label></td>
-        <td><input id="phnum" name="phnum" value="{{phnum}}"></td>
+        <td><input class="fill" id="phnum" name="phnum" value="{{user['phnum']}}"></td>
       </tr>
     <tr>
         <td><label for="email">email</label></td>
-        <td><input id="email" name="email" value="{{email}}"></td>  
+        <td><input class="fill" id="email" name="email" value="{{user['email']}}"></td>  
       </tr>
     
     <tr>
         <td><label for="cname">company</label></td>
-        <td><input id="cname" name='cname' value='{{cname}}'></td>
+        <td><input class="fill" id="cname" name='cname' value="{{user['cid']}}"></td>
       </tr>
    
-</table>
-
-
+  </table>
+  <input class = "click" type="submit" value="Update">
+</form>
 
 </body>
 {% endblock %}

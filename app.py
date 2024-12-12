@@ -146,11 +146,22 @@ def account_detail(uid):
     if 'uid' in session:
         uid = session['uid']
         conn = dbi.connect()
+
+        #conferences = c.get_conf_by_user(conn, uid)
+        if request.method == 'POST':
+            name = request.form.get('name')
+            phnum = request.form.get('phnum')
+            email = request.form.get('email')
+            cid = request.form.get('cid')
+            c.update_user(conn, uid, name, phnum, email, cid)
+            flash("Your account information has been updated!")
+            return redirect(url_for('account_detail', uid=uid))
+        
         user = c.get_user(conn,uid)
         if not user:
             flash("User not found. Redirecting to create account page.")
             return redirect(url_for('create_account'))
-        return render_template('account_detail.html',title ='Account Detail Page', **user)
+        return render_template('account_detail.html',title ='Account Detail Page', user=user)
     else:
         flash('user not logged in, login or create account')
         return redirect(url_for('home'))
@@ -184,10 +195,7 @@ def create_conf(uid):
     else:
         flash('You are not logged in. Please login or create account before creating conference')
         return redirect(url_for('home'))
-   
-    
 
-    
 
 @app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
 def conf_detail(eid):

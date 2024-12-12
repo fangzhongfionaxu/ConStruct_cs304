@@ -5,7 +5,7 @@
 <h2>Create A New Conference!</h2>
 
 <form method=post action="">
-    <fieldset>
+    <fieldset style="border:none;">
         <legend>Conference Information:</legend>
         <table>
         <tr><td><label for="host">Host:</label></td>
@@ -13,23 +13,29 @@
             
             <td>email ({{email}})</td></tr>
         <tr><td><label for="conf-title">Conference Title:</label></td>
-            <td><input id="conf-title" type="text" name="conf-title"></td></tr>
-        <tr><td><label for="conf-description" >Conference Description:</label></td>
-            <td><input id="conf-description" type="text" name="conf-description"></td></tr>
+            <td><input class="fill" id="conf-title" type="text" name="conf-title"></td></tr>
+        <tr><td style="vertical-align: top;">
+            <label for="conf-description" >Conference Description:</label></td>
+            <td>
+                <textarea class="fill" id="conf-description" name="conf-description" style="height: 100px; width: 100%;"></textarea>
+            </td></tr>
         <tr><td><label for="conf-location" >Conference Location:</label></td>
-            <td><input id="conf-location" type="text" name="conf-location"></td></tr>
+            <td><input class="fill" id="conf-location" type="text" name="conf-location"></td></tr>
         <tr><td><label for="conf-start" > Conference Start Date:</label></td>
-            <td><input id="conf-start" type="text" name="conf-start"></td></tr>
+            <td><input class="fill" id="conf-start" type="text" name="conf-start" style="width:150px"></td></tr>
         <tr><td><label for="conf-end" > Conference End Date:</label></td>
-            <td><input id="conf-end" type="text" name="conf-end"></td></tr>
+            <td style="display: flex; align-items: center; gap: 12px;">
+                <input class="fill" id="conf-end" type="text" name="conf-end" style="width:150px">
+                <input class="click" type='submit' value='Submit'>
+            </td></tr>
             <label for="conf-industry">Industry:</label>
-            <select id="conf-industry" name="conf-industry">
+            <select id="conf-industry" name="conf-industry" class="fill" style="width:250px">
             <option value="none">Choose One</option>
                 <option value="Academic">Academic</option>
                 <option value="Energy">Energy</option>
                 <option value="Materials">Materials</option>
                 <option value="Industrials">Industrials</option>
-                <option value="Consumer Discretionary/Staples'">Consumer Discretionary/Staples'</option>
+                <option value="Consumer Discretionary/Staples">Consumer Discretionary/Staples'</option>
                 <option value="Health Care">Health Care</option>
                 <option value="Financials">Financials</option>
                 <option value="Information Technology">Information Technology</option>
@@ -42,7 +48,6 @@
         
         </table>
         </fieldset>
-        <p> <input type='submit' value='Submit'> </p>
 
 </form>
 

@@ -11,14 +11,19 @@ def select_conf(conn,query, industry): #select the number of
     curs = dbi.dict_cursor(conn)
     current_date = datetime.datetime.now()
     
-    if query and industry =="none":
+    if query == "None" or query =="":
+        query = False
+    if industry == "none" or industry == "":
+        industry = False
+
+    if query and (industry is False):
         #Filter conferences based on the search
         query = f"%{query}%"
-        sql = 'select * from events where (title like %s or descript like %s) and end_date >= %s'
-        curs.execute(sql, (query, query, current_date))
+        sql = 'select * from events where title like %s or descript like %s'
+        curs.execute(sql, (query, query))
         print (" use keyword")
         
-    elif industry and (query == "None" or query ==""):
+    elif industry and (query is False):
         sql = 'select * from events where industry like %s and end_date >= %s'
         curs.execute(sql, (industry, current_date))
         print (" use industry")
@@ -62,6 +67,19 @@ def get_conf_all(conn, query): #get all conf from title
     e = curs.fetchall()
     return e
 
+def get_conf_by_user(conn,uid): #get all conf by one user
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from events where host = %s'
+    curs.execute(sql, [uid])
+    conference = curs.fetchone()
+    return conference
+
+def update_user(conn, uid, name, phnum, email, cid): #update user information in database
+    curs = dbi.dict_cursor(conn)
+    sql = 'update users set name = %s, phnum = %s, email = %s, cid = %s where uid = %s'
+    curs.execute(sql, [name, phnum, email, cid, uid])
+    conn.commit()
+
 def insert_user(conn, name, phnum, email, password, cname): #create_account page, return new uid
     curs = dbi.dict_cursor(conn)
     cid = insert_or_get_cid(conn, cname)
@@ -100,7 +118,7 @@ def insert_or_get_cid(conn, cname): #insert new company if input company does no
 
 def get_user(conn,uid):
     curs = dbi.dict_cursor(conn)
-    sql = 'select u.uid, u.name, u.phnum, u.email,  c.name from users u, companies c where uid = %s and c.cid = u.cid'
+    sql = 'select u.uid, u.name, u.phnum, u.email,  c.name from users u, companies c where uid = %s' #took out  and c.cid = u.cid
     curs.execute(sql, uid)
     user = curs.fetchone()
     

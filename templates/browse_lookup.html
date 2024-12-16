@@ -10,12 +10,12 @@
 <form method="GET" action="/browse/">
   <h2>Keyword Search Form</h2>
     <label for="keyword">Search Conferenes:</label>
-    <input type="text" id="keyword" name="query" value="{{ query|default('') }}">
+    <input class="fill" type="text" id="keyword" name="query" value="{{ query|default('') }}" style="width:200px;">
 
 
   <h2>Select Industries</h2>
   <label for="conf-industry">Industry:</label>
-        <select id="conf-industry" name="conf-industry">
+        <select id="conf-industry" name="conf-industry" class="fill" style="width:250px;">
         <option value="none">Choose One</option>
             <option value="Academic">Academic</option>
             <option value="Energy">Energy</option>
@@ -31,7 +31,7 @@
             <option value="Other">Other</option>
               </select>
 
-    <input type="submit" value="Search">
+    <input class = "click" type="submit" value="Search">
   </form>
 
     
@@ -42,7 +42,7 @@
 {% else %}
 <h3>Available Conferences:</h3>
 <p> Keywords: {{query}}  |  Industry: {{industry}} </p>
-<ul>
+<ul class = "conf-display">
     {% for event in e%}
   <li><a href= "{{url_for('conf_detail',eid=event['eid'])}}" >{{ event['title'] }}</a></li>
 {% endfor %}

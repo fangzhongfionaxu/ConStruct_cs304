@@ -55,11 +55,16 @@ CREATE TABLE attendees(
     eid int,
     aid int, -- attendee
     checked_in boolean,
+    primary key (eid, aid),
     foreign key (eid) references events(eid)
         on update restrict
         on delete restrict,
     foreign key (aid) references users(uid)
         on update cascade
         on delete cascade
+    
 )
 ENGINE = InnoDB;
+
+INSERT INTO attendees (eid, aid, checked_in )
+VALUES (2, 1, false);

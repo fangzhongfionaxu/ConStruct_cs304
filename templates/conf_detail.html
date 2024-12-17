@@ -9,6 +9,7 @@
 
 <body>
 </div>
+
 <table>
     <tr>
         <td><label for="conf-id">ID</label></td>
@@ -41,13 +42,17 @@
         <td><input class="fill" id="conf-end" name='conf-end' value='{{end_date}}' readonly></td>
       </tr>
     <tr>
-        <td><label for="conf-host">Host</label></td>
+        <td><label for="conf-host">Host ID</label></td>
         <td><input class="fill" id="conf-host" name='conf-host' value='{{host}}' readonly></td>
       </tr>
+      <tr>
+        <td><label for="num-registered">Number of Attendees</label></td>
+        <td><input class="fill" id="num-registered" name='num-registered' value='{{num}}' readonly></td>
+      </tr>
 
-    
-    <button type="submit" class="click">Register</button>
-  </form>
+      <td><form method= post action="{{url_for('conf_detail', eid = eid)}}">
+    <button type="submit" class="click">Register</button>  </form></td>
+  
 </table>
 
 

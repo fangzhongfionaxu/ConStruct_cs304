@@ -7,9 +7,9 @@
 
 
 <h1> Browse for conferences using keyword and industries search</h1>
-<form method="GET" action="/browse/">
+<form method="GET" action="{{url_for('browse',uid = uid)}}">
   <h2>Keyword Search Form</h2>
-    <label for="keyword">Search Conferenes:</label>
+    <label for="keyword">Search Conferences:</label>
     <input class="fill" type="text" id="keyword" name="query" value="{{ query|default('') }}" style="width:200px;">
 
 

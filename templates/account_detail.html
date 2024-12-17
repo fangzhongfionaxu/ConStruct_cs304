@@ -25,14 +25,38 @@
         <td><input class="fill" id="email" name="email" value="{{user['email']}}"></td>  
       </tr>
     
-    <tr>
-        <td><label for="cname">company</label></td>
-        <td><input class="fill" id="cname" name='cname' value="{{user['cid']}}"></td>
-      </tr>
+  
    
   </table>
   <input class = "click" type="submit" value="Update">
 </form>
 
 </body>
+
+
+
+<table id="registered_conf">
+  <tr>
+      <th>Title</th>
+      <th>Desciption</th>
+      <th>Industry</th>
+      <th>Location</th>
+      <th>start_date</th>
+      <th>end_date</th>
+  </tr>
+
+
+  {% for conf in conferences %}
+  <tr >
+      <td class="title"> {{conf.title}}</td>
+      <td class="description">{{conf.descript}}</td>
+      <td class="industry">{{conf.industry}}</td>
+      <td class="loaction">{{conf.location}}</td>
+      <td class="start_date">{{conf.start_date}}</td>
+      <td class="end_date">{{conf.end_date}}</td>
+      <!-- you can replace the function name with your function -->
+
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block main_content %}
 
 <h3>{{page_title}}</h3>
-<form method=post action="/login/">
+<form method=post action="{{url_for('login',uid = uid)}}">
     <fieldset style="border: none;">
     <legend>Categories with "*" is required</legend>
     <table> 

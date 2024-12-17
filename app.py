@@ -23,20 +23,28 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 @app.route('/') #home
 def home():
+    if 'uid' in session:
+        uid = session['uid']
+    else:
+        uid = 0
+        flash('please login or create account')
+
     return render_template('main.html',
-                           page_title='Main Page')
+                           page_title='Main Page',
+                           uid = uid)
 
 
 
-@app.route('/browse/', defaults={'uid': None}, methods=["GET", "POST"])
-@app.route('/browse/<uid>', methods = ["GET", "POST"]) #home
+@app.route('/browse/', defaults={'uid': None}, methods=["GET"])
+@app.route('/browse/<uid>', methods = ["GET"]) #home
 def browse(uid):
     query = request.args.get('query')
     industry = request.args.get('conf-industry')
     print(query)
     print(industry)
-    #session['email'] = user['email']
-  
+    
+    flash('You are not logged in. Please login or create account')
+
     if 'uid' in session:
         uid = session['uid']
        
@@ -47,9 +55,9 @@ def browse(uid):
         length = len(events)
         
         return render_template('browse_lookup.html', page_title= "Browsing Page" , uid = uid , e=events, query=query, industry= industry, length=length)
-    else:
-        flash('You are not loged in. Please login or create account')
-        return redirect(url_for('home'))
+
+    
+    return redirect(url_for('home'))
 
 @app.route('/login/', methods = ['GET','POST']) #home
 def login():
@@ -64,7 +72,7 @@ def login():
         user = c.user_exist(conn,email) 
         if user is None:
             flash('user does not exist, please re-enter email')
-            render_template('login.html',
+            return render_template('login.html',
                                 page_title='Login Page')
         else:
             stored = user['hashedpswd']
@@ -97,7 +105,7 @@ def logout():
         flash('you are not logged in. Please login or create account')
         return redirect( url_for('home') )
 
-@app.route('/create_account/', methods=['GET','POST']) #need to add hashed to password section
+@app.route('/create_account/', methods=['GET','POST']) #add user to users table
 def create_account():
     
     if request.method == 'GET':
@@ -140,11 +148,13 @@ def create_account():
 
         return redirect(url_for('account_detail',uid = new_uid)) #redirect to user detail page
 
-@app.route('/account_detail/<uid>', defaults={'uid': None}, methods=["GET", "POST"])
-@app.route('/account_detail/<uid>', methods=['GET','POST']) #user detail (account detail) page
+
+@app.route('/account_detail/<uid>', methods=['GET','POST']) #user detail (account detail) page, update with post
 def account_detail(uid):
+    flash('user not logged in, login or create account')
     if 'uid' in session:
         uid = session['uid']
+        print (uid)
         conn = dbi.connect()
 
         #conferences = c.get_conf_by_user(conn, uid)
@@ -153,21 +163,23 @@ def account_detail(uid):
             phnum = request.form.get('phnum')
             email = request.form.get('email')
             cid = request.form.get('cid')
+            print(name )
+            print("test if it goes to post and update")
             c.update_user(conn, uid, name, phnum, email, cid)
             flash("Your account information has been updated!")
             return redirect(url_for('account_detail', uid=uid))
         
         user = c.get_user(conn,uid)
+        conferences = c.get_registered_conf(conn,uid)
+
         if not user:
             flash("User not found. Redirecting to create account page.")
             return redirect(url_for('create_account'))
-        return render_template('account_detail.html',title ='Account Detail Page', user=user)
-    else:
-        flash('user not logged in, login or create account')
-        return redirect(url_for('home'))
+        return render_template('account_detail.html',title ='Account Detail Page', user=user,uid = uid, conferences = conferences)
+    return redirect(url_for('home',uid =uid))
 
-@app.route('/create_conf/<uid>', defaults={'uid': None}, methods=["GET", "POST"])
-@app.route('/create_conf/<uid>', methods=['GET', 'POST'])
+#@app.route('/create_conf/<uid>', defaults={'uid': None}, methods=["POST"])
+@app.route('/create_conf/<uid>', methods=['GET','POST'])
 def create_conf(uid):
     
     if 'uid' in session:
@@ -184,9 +196,11 @@ def create_conf(uid):
             start_date = request.form.get('conf-start')
             end_date = request.form.get('conf-end')
             host = uid
+
             if not title or not descript or industry  == 'none' or not location or not start_date or not end_date :
                 flash("All fields are required to create a new conference")
                 return render_template('create_conf.html')
+            
             conn = dbi.connect()
             new_eid = c.insert_conf(conn, title, descript,industry,location,start_date,end_date,host)
             flash("Conference created successfully!")
@@ -196,15 +210,33 @@ def create_conf(uid):
         flash('You are not logged in. Please login or create account before creating conference')
         return redirect(url_for('home'))
 
-
 @app.route('/conf_detail/<eid>', methods=['GET', 'POST'])
 def conf_detail(eid):
     conn = dbi.connect()
     conference = c.get_conf(conn,eid)
+    host = c.get_host(conn,eid)
+    if 'uid' in session:
+        aid = session['uid']
+        num = c.get_num_registered(conn,eid)
+        
+    else:
+        aid = 0
+        flash('please login or create account')
+        return redirect(url_for('home'))
+    
     if not conference:
         flash("Conference with eid=%s not found. Redirecting to create conference page." %eid)
-        return redirect(url_for('create_conf'))
-    return render_template('conf_detail.html',**conference)
+        return redirect(url_for('create_conf', uid = host))
+    
+    if request.method=='POST':
+        if 'uid' in session:
+            aid = session['uid']
+            
+            c.register_conf(conn,eid,aid)
+            num = c.get_num_registered(conn,eid)
+    
+    
+    return render_template('conf_detail.html',**conference, num = num, aid = aid,uid = aid)
     
 
 

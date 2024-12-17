@@ -4,7 +4,7 @@
 
 <h2>Create A New Conference!</h2>
 
-<form method=post action="">
+<form method=post action="{{url_for('create_conf', uid = uid)}}">
     <fieldset style="border:none;">
         <legend>Conference Information:</legend>
         <table>
@@ -22,10 +22,10 @@
         <tr><td><label for="conf-location" >Conference Location:</label></td>
             <td><input class="fill" id="conf-location" type="text" name="conf-location"></td></tr>
         <tr><td><label for="conf-start" > Conference Start Date:</label></td>
-            <td><input class="fill" id="conf-start" type="text" name="conf-start" style="width:150px"></td></tr>
+            <td><input class="fill" id="conf-start" type="date" name="conf-start" style="width:150px"></td></tr>
         <tr><td><label for="conf-end" > Conference End Date:</label></td>
             <td style="display: flex; align-items: center; gap: 12px;">
-                <input class="fill" id="conf-end" type="text" name="conf-end" style="width:150px">
+                <input class="fill" id="conf-end" type="date" name="conf-end" style="width:150px">
                 <input class="click" type='submit' value='Submit'>
             </td></tr>
             <label for="conf-industry">Industry:</label>

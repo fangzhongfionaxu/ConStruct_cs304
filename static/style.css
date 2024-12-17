@@ -156,3 +156,29 @@ button:focus, nav a:hover, nav a:focus {
     border: 1px solid #9c9a9a; 
     border-radius: 4px;
 }
+
+#registered_conf {
+    width: 100%;
+    border-collapse: collapse; /* Ensures borders don't double */
+    margin: 20px 0; /* Adds spacing around the table */
+}
+
+#registered_conf th, 
+#registered_conf td {
+    border: 1px solid #ddd; /* Adds borders around cells */
+    padding: 8px; /* Adds padding inside cells */
+    text-align: left; /* Aligns text to the left */
+}
+
+#registered_conf th {
+    background-color: #f4f4f4; /* Light gray background for headers */
+    font-weight: bold; /* Makes headers bold */
+}
+
+#registered_conf tr:nth-child(even) {
+    background-color: #f9f9f9; /* Alternating row colors */
+}
+
+#registered_conf tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}

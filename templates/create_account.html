@@ -13,7 +13,7 @@ email varchar(40),
 password varchar(30),
 cid int -->
 
-<form method=post action="/create_account/">
+<form method=post action="{{url_for('create_account')}}">
   <fieldset style="border:none;">
   <legend>Account Information: (categories with "*" is required)</legend>
   <table>
@@ -25,12 +25,10 @@ cid int -->
   <tr><td><label for="email" > *email:</label></td>
       <td><input class="fill" id="email" type="email" name="email"></td></tr>
   <tr><td><label for="password1" > *password:</label></td>
-      <td><input class="fill" id="password1" type="password" name="password1"></td></tr>
+      <td><input class="fill" id="password1" type="password" name="password1" style="width:145px;"></td></tr>
   <tr><td><label for="password2" > *confirm password:</label></td>
-      <td><input class="fill" id="password2" type="password" name="password2"></td></tr>
-  <tr><td><label for="company" > company(leave empty if no company affiliation):</label></td>
       <td style="display: flex; align-items: center; gap: 12px;">
-        <input class="fill" id="company" type="text" name="company">
+        <input class="fill" id="password2" type="password" name="password2">
         <input class="click" type='submit' value='submit'> 
       </td></tr>
   </table>

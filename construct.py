@@ -98,23 +98,23 @@ def get_registered_conf(conn,uid):# get all conf(eid) registered by one user
 
     return result
 
-def update_user(conn, uid, name, phnum, email, cid): #update user information in database
+def update_user(conn, uid, name, phnum, email): #update user information in database
     curs = dbi.dict_cursor(conn)
-    sql = 'update users set name = %s, phnum = %s, email = %s, cid = %s where uid = %s'
-    curs.execute(sql, [name, phnum, email, cid, uid])
+    sql = 'update users set name = %s, phnum = %s, email = %s where uid = %s'
+    curs.execute(sql, [name, phnum, email, uid])
     conn.commit()
 
-def insert_user(conn, name, phnum, email, password, cname): #create_account page, return new uid
+def insert_user(conn, name, phnum, email, password ): #create_account page, return new uid
     curs = dbi.dict_cursor(conn)
-    cid = insert_or_get_cid(conn, cname)
-    print(cid, type(cid))
+   
+
     
 
     hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     stored = hashed.decode('utf-8')
-    sql = 'insert into users (name, phnum , email, hashedpswd, cid) values (%s,%s,%s,%s,%s )'
+    sql = 'insert into users (name, phnum , email, hashedpswd) values (%s,%s,%s,%s )'
     sql2 = 'select last_insert_id() as uid'
-    curs.execute(sql,[name, phnum , email, stored, cid])
+    curs.execute(sql,[name, phnum , email, stored])
     conn.commit()
 
     curs.execute(sql2)
@@ -142,7 +142,7 @@ def insert_or_get_cid(conn, cname): #insert new company if input company does no
 
 def get_user(conn,uid):
     curs = dbi.dict_cursor(conn)
-    sql = 'select u.uid, u.name, u.phnum, u.email,  c.name from users u, companies c where uid = %s' #took out  and c.cid = u.cid
+    sql = 'select u.uid, u.name, u.phnum, u.email from users u where uid = %s' #took out  and c.cid = u.cid
     curs.execute(sql, uid)
     user = curs.fetchone()
     

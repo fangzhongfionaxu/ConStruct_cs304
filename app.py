@@ -43,21 +43,22 @@ def browse(uid):
     print(query)
     print(industry)
     
-    flash('You are not logged in. Please login or create account')
+    if 'uid' not in session:
+        flash('You are not logged in. Please login or create account')
+        return redirect(url_for('home'))
 
-    if 'uid' in session:
-        uid = session['uid']
-       
-        conn = dbi.connect()
-        events = c.select_conf(conn,query, industry)
-        sessvalue = request.cookies.get('session')
-        print (sessvalue)
-        length = len(events)
-        
-        return render_template('browse_lookup.html', page_title= "Browsing Page" , uid = uid , e=events, query=query, industry= industry, length=length)
+    uid = session['uid']
+    
+    conn = dbi.connect()
+    events = c.select_conf(conn,query, industry)
+    sessvalue = request.cookies.get('session')
+    print (sessvalue)
+    length = len(events)
+    
+    return render_template('browse_lookup.html', page_title= "Browsing Page" , uid = uid , e=events, query=query, industry= industry, length=length)
+
 
     
-    return redirect(url_for('home'))
 
 @app.route('/login/', methods = ['GET','POST']) #home
 def login():
@@ -131,11 +132,10 @@ def create_account():
         if password!= password2:
             flash('passwords do not match, please check ')
             return redirect( url_for('create_account'))
-        cname = request.form.get('company')
         if not name or not phnum or not email or not password or not password2:
             flash("All fields are required to create a new account")
             return render_template('create_account.html',page_title='Create Account Page')
-        new_uid = c.insert_user(conn, name, phnum, email, password, cname) #when we have the login page, will redirect to loggedin browsing page
+        new_uid = c.insert_user(conn, name, phnum, email, password) #when we have the login page, will redirect to loggedin browsing page
         flash('New account created successfully')
         sql = 'select uid, name, phnum, email, cid from users where email like %s'
         curs.execute(sql,[email])
@@ -146,37 +146,39 @@ def create_account():
         session['logged_in'] = True
         session['visits'] = 1
 
-        return redirect(url_for('account_detail',uid = new_uid)) #redirect to user detail page
+        return redirect(url_for('account_detail',title ='Account Detail Page',uid = new_uid)) #redirect to user detail page
 
 
 @app.route('/account_detail/<uid>', methods=['GET','POST']) #user detail (account detail) page, update with post
 def account_detail(uid):
-    flash('user not logged in, login or create account')
-    if 'uid' in session:
-        uid = session['uid']
-        print (uid)
-        conn = dbi.connect()
+    if 'uid' not in session:
+        flash('You are not logged in. Please login or create account')
+        return redirect(url_for('home'))
 
-        #conferences = c.get_conf_by_user(conn, uid)
-        if request.method == 'POST':
-            name = request.form.get('name')
-            phnum = request.form.get('phnum')
-            email = request.form.get('email')
-            cid = request.form.get('cid')
-            print(name )
-            print("test if it goes to post and update")
-            c.update_user(conn, uid, name, phnum, email, cid)
-            flash("Your account information has been updated!")
-            return redirect(url_for('account_detail', uid=uid))
-        
-        user = c.get_user(conn,uid)
-        conferences = c.get_registered_conf(conn,uid)
 
-        if not user:
-            flash("User not found. Redirecting to create account page.")
-            return redirect(url_for('create_account'))
-        return render_template('account_detail.html',title ='Account Detail Page', user=user,uid = uid, conferences = conferences)
-    return redirect(url_for('home',uid =uid))
+    uid = session['uid']
+    print (uid)
+    conn = dbi.connect()
+
+    #conferences = c.get_conf_by_user(conn, uid)
+    if request.method == 'POST':
+        name = request.form.get('name')
+        phnum = request.form.get('phnum')
+        email = request.form.get('email')
+        print(name )
+        print("test if it goes to post and update")
+        c.update_user(conn, uid, name, phnum, email)
+        flash("Your account information has been updated!")
+        return redirect(url_for('account_detail',title ='Account Detail Page', uid=uid))
+    
+    user = c.get_user(conn,uid)
+    conferences = c.get_registered_conf(conn,uid)
+
+    if not user:
+        flash("User not found. Redirecting to create account page.")
+        return redirect(url_for('create_account'))
+    return render_template('account_detail.html',title ='Account Detail Page', user=user,uid = uid, conferences = conferences)
+
 
 #@app.route('/create_conf/<uid>', defaults={'uid': None}, methods=["POST"])
 @app.route('/create_conf/<uid>', methods=['GET','POST'])
